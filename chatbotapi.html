@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Simple Chatbot</title>
+    <style>
+        body { font-family: Arial; background-color: #f2f2f2; }
+        #chatbox { width: 400px; height: 400px; border: 1px solid black; padding: 10px; overflow-y: scroll; margin: auto; background-color: white; }
+        input { width: 300px; padding: 5px; }
+        button { padding: 5px; }
+    </style>
+</head>
+<body>
+
+<h2 style="text-align:center;">My Google Sheet Chatbot</h2>
+
+<div id="chatbox"></div>
+
+<div style="text-align:center; margin-top: 10px;">
+    <input type="text" id="userInput" placeholder="Type your question here">
+    <button onclick="sendMessage()">Send</button>
+</div>
+
+<script>
+    var chatbox = document.getElementById("chatbox");
+
+    function sendMessage() {
+        var userInput = document.getElementById("userInput").value;
+        if (userInput.trim() === "") return;
+
+        chatbox.innerHTML += "<div><b>You:</b> " + userInput + "</div>";
+
+        fetch('https://script.google.com/macros/s/AKfycbznzh4STNo9GBGk-v0Z1dpC9RzRo8OnpJqQ5R8TahleI7vLIqUOOn0crGcKeanmAGNNFQ/exec' + '?query=' + encodeURIComponent(userInput))
+            .then(response => response.json())
+            .then(data => {
+                chatbox.innerHTML += "<div><b>Bot:</b> " + data.reply + "</div>";
+                chatbox.scrollTop = chatbox.scrollHeight;
+            });
+
+        document.getElementById("userInput").value = "";
+    }
+</script>
+
+</body>
+</html>
