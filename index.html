@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Improved Google Sheet Chatbot</title>
 <style>
-  /* Reset and base */
   body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background: #e9ecef;
@@ -44,20 +43,14 @@
     border-bottom: 1px solid #ddd;
   }
 
-  /* Scrollbar for chatbox */
   #chatbox::-webkit-scrollbar {
     width: 6px;
-  }
-  #chatbox::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 3px;
   }
   #chatbox::-webkit-scrollbar-thumb {
     background: #007bff;
     border-radius: 3px;
   }
 
-  /* Chat messages */
   .message {
     margin-bottom: 15px;
     max-width: 80%;
@@ -67,6 +60,7 @@
     animation: fadeInUp 0.3s ease forwards;
     opacity: 0;
   }
+
   .message.user {
     background: #007bff;
     color: white;
@@ -74,12 +68,19 @@
     border-bottom-right-radius: 4px;
     animation-delay: 0.1s;
   }
+
   .message.bot {
     background: #f1f0f0;
     color: #333;
     float: left;
     border-bottom-left-radius: 4px;
     animation-delay: 0.2s;
+  }
+
+  .typing {
+    font-style: italic;
+    color: gray;
+    margin-bottom: 15px;
   }
 
   @keyframes fadeInUp {
@@ -110,6 +111,7 @@
     outline: none;
     transition: border-color 0.3s ease;
   }
+
   input#userInput:focus {
     border-color: #007bff;
   }
@@ -126,11 +128,11 @@
     font-size: 1rem;
     transition: background-color 0.3s ease;
   }
+
   button#sendBtn:hover {
     background: #0056b3;
   }
 
-  /* Responsive */
   @media (max-width: 480px) {
     .chat-container {
       height: 100vh;
@@ -170,6 +172,20 @@
     chatbox.scrollTop = chatbox.scrollHeight;
   }
 
+  function appendTyping() {
+    const typing = document.createElement('div');
+    typing.classList.add('typing');
+    typing.id = 'typingIndicator';
+    typing.textContent = 'Mithra is typing...';
+    chatbox.appendChild(typing);
+    chatbox.scrollTop = chatbox.scrollHeight;
+  }
+
+  function removeTyping() {
+    const typing = document.getElementById('typingIndicator');
+    if (typing) typing.remove();
+  }
+
   function sendMessage() {
     const text = userInput.value.trim();
     if (!text) return;
@@ -178,12 +194,16 @@
     userInput.value = '';
     userInput.focus();
 
+    appendTyping();
+
     fetch('https://script.google.com/macros/s/AKfycbznzh4STNo9GBGk-v0Z1dpC9RzRo8OnpJqQ5R8TahleI7vLIqUOOn0crGcKeanmAGNNFQ/exec?query=' + encodeURIComponent(text))
       .then(response => response.json())
       .then(data => {
+        removeTyping();
         appendMessage(data.reply, 'bot');
       })
       .catch(() => {
+        removeTyping();
         appendMessage("Sorry, I couldn't reach the server. Please try again.", 'bot');
       });
   }
@@ -193,7 +213,13 @@
   userInput.addEventListener('keydown', e => {
     if (e.key === 'Enter') sendMessage();
   });
+
+  // Show welcome message when page loads
+  window.onload = function() {
+    appendMessage('Hi, I am Mithra! How can I help you today?', 'bot');
+  };
 </script>
 
 </body>
 </html>
+
