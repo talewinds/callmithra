@@ -3,80 +3,82 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Call Mithra</title>
+<title>callMithra Chatbot</title>
 <style>
   body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: #f7f7f7;
+    background: white;
     margin: 0;
     padding: 20px;
     display: flex;
     justify-content: center;
   }
-
   .chat-container {
     background: white;
     width: 100%;
-    max-width: 460px;
-    height: 600px;
+    max-width: 480px;
+    height: 580px;
     border-radius: 12px;
     box-shadow: 0 8px 20px rgba(0,0,0,0.15);
     display: flex;
     flex-direction: column;
   }
-
   .header {
     padding: 20px;
     background: white;
-    color: #FF9933; /* Dark Saffron */
-    font-size: 1.6rem;
+    color: #d47c16; /* Dark saffron */
+    font-size: 1.8rem;
     font-weight: 700;
+    text-align: center;
+    border-bottom: 2px solid #d47c16;
     border-top-left-radius: 12px;
     border-top-right-radius: 12px;
-    text-align: center;
   }
-
   #buttonsArea {
-    padding: 10px;
-    text-align: center;
+    padding: 15px 20px;
     border-bottom: 1px solid #ddd;
   }
-
-  select {
-    margin: 8px;
-    padding: 10px;
-    border-radius: 8px;
-    border: 1.5px solid #007bff;
+  #buttonsArea label {
     font-weight: 600;
+    color: #333;
   }
-
+  select {
+    width: 100%;
+    margin-top: 6px;
+    margin-bottom: 14px;
+    padding: 8px 12px;
+    font-size: 1rem;
+    border-radius: 8px;
+    border: 1.8px solid #007bff;
+    outline: none;
+    cursor: pointer;
+  }
+  select:focus {
+    border-color: #d47c16;
+  }
   #chatbox {
     flex-grow: 1;
     padding: 20px;
     overflow-y: auto;
-    border-bottom: 1px solid #ddd;
     background: #fafafa;
   }
-
   #chatbox::-webkit-scrollbar {
     width: 6px;
   }
   #chatbox::-webkit-scrollbar-thumb {
-    background: #007bff;
+    background: #d47c16;
     border-radius: 3px;
   }
-
   .message {
-    margin-bottom: 15px;
+    margin-bottom: 16px;
     max-width: 80%;
-    padding: 12px 18px;
+    padding: 14px 20px;
     border-radius: 20px;
     clear: both;
+    white-space: pre-wrap;
     animation: fadeInUp 0.3s ease forwards;
     opacity: 0;
-    white-space: pre-wrap;
   }
-
   .message.user {
     background: #007bff;
     color: white;
@@ -84,21 +86,20 @@
     border-bottom-right-radius: 4px;
     animation-delay: 0.1s;
   }
-
   .message.bot {
-    background: #000000; /* Darkest Black */
-    color: white;
+    background: #f9f9f9;
+    color: #111; /* darkest black for answers */
     float: left;
     border-bottom-left-radius: 4px;
     animation-delay: 0.2s;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
   }
-
   .typing {
     font-style: italic;
     color: gray;
-    margin-bottom: 15px;
+    margin-bottom: 16px;
+    clear: both;
   }
-
   @keyframes fadeInUp {
     from {
       opacity: 0;
@@ -117,39 +118,34 @@
   <div class="header">callMithra</div>
 
   <div id="buttonsArea">
-    <div>
-      <strong>Select Place:</strong><br />
-      <select id="placeSelect">
-        <option value="">-- Select Place --</option>
-        <option value="Alampallam">Alampallam</option>
-        <option value="Kollengode">Kollengode</option>
-        <option value="Mathur">Mathur</option>
-      </select>
-    </div>
+    <label for="placeSelect">Select Place:</label>
+    <select id="placeSelect">
+      <option value="">-- Select Place --</option>
+      <option>Alampallam</option>
+      <option>Kollengode</option>
+      <option>Mathur</option>
+      <!-- Add more places as needed -->
+    </select>
 
-    <div style="margin-top:10px;">
-      <strong>Select Category:</strong><br />
-      <select id="categorySelect">
-        <option value="">-- Select Category --</option>
-        <option value="Caterers">Caterers</option>
-        <option value="Vaideekhal">Vaideekhal</option>
-        <option value="Other Services">Other Services</option>
-        <option value="Business">Business</option>
-        <option value="Advocates">Advocates</option>
-        <option value="Temple Priests">Temple Priests</option>
-      </select>
-    </div>
+    <label for="categorySelect">Select Category:</label>
+    <select id="categorySelect">
+      <option value="">-- Select Category --</option>
+      <option>Caterers</option>
+      <option>Business</option>
+      <option>Advocates</option>
+      <option>Temple Priests</option>
+      <!-- Add more categories if needed -->
+    </select>
 
-    <div style="margin-top:10px;">
-      <strong>Select FAQ:</strong><br />
-      <select id="faqSelect">
-        <option value="">-- Select FAQ --</option>
-        <option value="Who is Mithra ?">Who is Mithra ?</option>
-        <option value="Can we use Call Mithra App free ?">Can we use Call Mithra App free ?</option>
-        <option value="Are the phone numbers updated often ?">Are the phone numbers updated often ?</option>
-        <option value="Contact Mithra">Contact Mithra</option>
-      </select>
-    </div>
+    <label for="faqSelect">Select FAQ:</label>
+    <select id="faqSelect">
+      <option value="">-- Select FAQ --</option>
+      <option>Who is Mithra ?</option>
+      <option>Can we use Call Mithra App free ?</option>
+      <option>Are the phone numbers updated often ?</option>
+      <option>Contact Mithra</option>
+      <!-- Add more FAQs here -->
+    </select>
   </div>
 
   <div id="chatbox"></div>
@@ -183,66 +179,58 @@
     if (typing) typing.remove();
   }
 
-  placeSelect.addEventListener('change', () => {
-    if (placeSelect.value && categorySelect.value) {
-      sendContactRequest(placeSelect.value, categorySelect.value);
-    }
-  });
+  // On page load, greet user
+  window.onload = () => {
+    appendMessage('Hi, I am Mithra! Please select a Place and Category to get contacts, or select a FAQ question.', 'bot');
+  };
 
-  categorySelect.addEventListener('change', () => {
-    if (placeSelect.value && categorySelect.value) {
-      sendContactRequest(placeSelect.value, categorySelect.value);
-    }
-  });
+  // When place and category are selected, fetch contacts automatically
+  function tryFetchContacts() {
+    const place = placeSelect.value;
+    const category = categorySelect.value;
+    if (!place || !category) return;
 
-  faqSelect.addEventListener('change', () => {
-    if (faqSelect.value) {
-      sendFaqRequest(faqSelect.value);
-    }
-  });
-
-  function sendContactRequest(place, category) {
-    appendMessage(`Fetching contacts for ${category} in ${place}...`, 'user');
+    appendMessage(`You selected Place: ${place}`, 'user');
+    appendMessage(`You selected Category: ${category}`, 'user');
     appendTyping();
 
-    fetch(`https://script.google.com/macros/s/AKfycbyADWGJ7HPGBl0UHiCdWyQYoHAz2lUf2nrJvpCpSLz4dXQW3NfTYvi-lOdvgy4jjbN1bA/exec?place=${encodeURIComponent(place)}&category=${encodeURIComponent(category)}`)
-      .then(response => response.json())
+    fetch(`https://script.google.com/macros/s/AKfycbym3g-jSfOqYps5Ubv3s8DCSwa6dLGSlRMHJoPZgbT1H5Io9Ohmd9ZwhOtF5lvbuGI8/exec?place=${encodeURIComponent(place)}&category=${encodeURIComponent(category)}`)
+      .then(res => res.json())
       .then(data => {
         removeTyping();
         appendMessage(data.reply, 'bot');
       })
       .catch(() => {
         removeTyping();
-        appendMessage("Sorry, I couldn't reach the server. Please try again.", 'bot');
+        appendMessage("Sorry, I couldn't reach the server for contacts. Please try again.", 'bot');
       });
-
-    // Reset selections
-    placeSelect.value = "";
-    categorySelect.value = "";
   }
 
-  function sendFaqRequest(faq) {
+  placeSelect.addEventListener('change', tryFetchContacts);
+  categorySelect.addEventListener('change', tryFetchContacts);
+
+  // When FAQ question is selected, fetch answer immediately
+  faqSelect.addEventListener('change', () => {
+    const faq = faqSelect.value;
+    if (!faq) return;
+
     appendMessage(`You asked: ${faq}`, 'user');
     appendTyping();
 
-    fetch(`https://script.google.com/macros/s/AKfycby26KL1Ymt5XcnWhB3XNl8wtp4vu9FWsdGC7BExuq0jsEmDTlcjHYd_aJnyh5Kj9WEU3Q/exec?faq=${encodeURIComponent(faq)}`)
-      .then(response => response.json())
+    fetch(`https://script.google.com/macros/s/AKfycbx14ZmGIVgDbh1XSIYztxVyhzY765gI4SiZX8ajTRQOabZcwafCb73vdvVKEJFiW7Ok/exec?faq=${encodeURIComponent(faq)}`)
+      .then(res => res.json())
       .then(data => {
         removeTyping();
         appendMessage(data.reply, 'bot');
       })
       .catch(() => {
         removeTyping();
-        appendMessage("Sorry, I couldn't reach the server. Please try again.", 'bot');
+        appendMessage("Sorry, I couldn't reach the server for FAQ. Please try again.", 'bot');
       });
 
+    // Reset FAQ dropdown to placeholder after fetching
     faqSelect.value = "";
-  }
-
-  // Show welcome message when page loads
-  window.onload = function() {
-    appendMessage('Hi, I am Mithra! Please select a Place, Category or FAQ below.', 'bot');
-  };
+  });
 </script>
 
 </body>
