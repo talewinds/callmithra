@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Improved Google Sheet Chatbot</title>
+<title>callMithra Chatbot</title>
 <style>
   body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -13,37 +13,51 @@
     display: flex;
     justify-content: center;
   }
-
   .chat-container {
     background: white;
     width: 100%;
     max-width: 420px;
-    height: 520px;
+    height: 540px;
     border-radius: 12px;
     box-shadow: 0 8px 20px rgba(0,0,0,0.15);
     display: flex;
     flex-direction: column;
   }
-
   .header {
     padding: 20px;
     background: white;
-    color: cream;
-    font-size: 1.4rem;
-    font-weight: 600;
+    color: #FF9933; /* dark saffron */
+    font-size: 1.6rem;
+    font-weight: 700;
     border-top-left-radius: 12px;
     border-top-right-radius: 12px;
     text-align: center;
+    user-select: none;
   }
-
-  #buttonsArea {
-    padding: 10px;
-    text-align: center;
+  #selectionArea {
+    padding: 12px 20px;
     border-bottom: 1px solid #ddd;
   }
-
-  #buttonsArea button {
-    margin: 4px 6px;
+  select {
+    width: 48%;
+    margin: 0 1% 10px 0;
+    padding: 8px 12px;
+    font-size: 1rem;
+    border: 2px solid #007bff;
+    border-radius: 6px;
+    cursor: pointer;
+    outline: none;
+    transition: border-color 0.3s ease;
+  }
+  select:hover, select:focus {
+    border-color: #0056b3;
+  }
+  #faqButtons {
+    margin-top: 10px;
+    text-align: center;
+  }
+  #faqButtons button {
+    margin: 5px 6px;
     padding: 8px 14px;
     border-radius: 20px;
     border: none;
@@ -52,20 +66,17 @@
     cursor: pointer;
     font-weight: 600;
     transition: background-color 0.3s ease;
+    user-select: none;
   }
-
-  #buttonsArea button:hover {
+  #faqButtons button:hover {
     background: #0056b3;
   }
-
   #chatbox {
     flex-grow: 1;
     padding: 20px;
     overflow-y: auto;
-    border-bottom: 1px solid #ddd;
     background: #fafafa;
   }
-
   #chatbox::-webkit-scrollbar {
     width: 6px;
   }
@@ -73,7 +84,6 @@
     background: #007bff;
     border-radius: 3px;
   }
-
   .message {
     margin-bottom: 15px;
     max-width: 80%;
@@ -84,7 +94,6 @@
     opacity: 0;
     white-space: pre-wrap;
   }
-
   .message.user {
     background: #007bff;
     color: white;
@@ -92,21 +101,18 @@
     border-bottom-right-radius: 4px;
     animation-delay: 0.1s;
   }
-
   .message.bot {
     background: #f1f0f0;
-    color: #333;
+    color: #000000; /* darkest black */
     float: left;
     border-bottom-left-radius: 4px;
     animation-delay: 0.2s;
   }
-
   .typing {
     font-style: italic;
     color: gray;
     margin-bottom: 15px;
   }
-
   @keyframes fadeInUp {
     from {
       opacity: 0;
@@ -117,51 +123,6 @@
       transform: translateY(0);
     }
   }
-
-  .input-area {
-    display: flex;
-    padding: 15px 20px;
-    background: #f8f9fa;
-    border-bottom-left-radius: 12px;
-    border-bottom-right-radius: 12px;
-  }
-
-  input#userInput {
-    flex-grow: 1;
-    padding: 12px 16px;
-    border: 1.8px solid #ddd;
-    border-radius: 24px;
-    font-size: 1rem;
-    outline: none;
-    transition: border-color 0.3s ease;
-  }
-
-  input#userInput:focus {
-    border-color: #007bff;
-  }
-
-  button#sendBtn {
-    background: #007bff;
-    border: none;
-    color: white;
-    padding: 12px 20px;
-    margin-left: 12px;
-    border-radius: 24px;
-    cursor: pointer;
-    font-weight: 600;
-    font-size: 1rem;
-    transition: background-color 0.3s ease;
-  }
-
-  button#sendBtn:disabled {
-    background: #a0a5ab;
-    cursor: not-allowed;
-  }
-
-  button#sendBtn:hover:not(:disabled) {
-    background: #0056b3;
-  }
-
   @media (max-width: 480px) {
     .chat-container {
       height: 100vh;
@@ -171,8 +132,8 @@
     #chatbox {
       padding: 12px;
     }
-    .input-area {
-      padding: 12px;
+    #selectionArea {
+      padding: 10px;
     }
   }
 </style>
@@ -182,34 +143,38 @@
 <div class="chat-container">
   <div class="header">callMithra</div>
 
-  <div id="buttonsArea">
-    <div>
-      <strong>Select Place:</strong><br />
-      <button class="place-btn">Alampallam</button>
-      <button class="place-btn">Kollengode</button>
-      <button class="place-btn">Mathur</button>
-    </div>
+  <div id="selectionArea">
+    <select id="placeSelect">
+      <option value="" disabled selected>Select Place</option>
+      <option>Alampallam</option>
+      <option>Kollengode</option>
+      <option>Mathur</option>
+      <!-- add more places here -->
+    </select>
 
-    <div style="margin-top:10px;">
-      <strong>Select Category:</strong><br />
-      <button class="category-btn">Caterers</button>
-      <button class="category-btn">Vaideekhal</button>
-      <button class="category-btn">Other Services</button>
+    <select id="categorySelect">
+      <option value="" disabled selected>Select Category</option>
+      <option>Caterers</option>
+      <option>Vaideekhal</option>
+      <option>Other Services</option>
+      <!-- add more categories here -->
+    </select>
+
+    <div id="faqButtons">
+      <button data-faq="How to contact support?">How to contact support?</button>
+      <button data-faq="How to book a caterer?">How to book a caterer?</button>
+      <!-- add more FAQ buttons here -->
     </div>
   </div>
 
   <div id="chatbox"></div>
-
-  <div class="input-area">
-    <input type="text" id="userInput" placeholder="Type your question here..." autocomplete="off" disabled />
-    <button id="sendBtn" disabled>Send</button>
-  </div>
 </div>
 
 <script>
   const chatbox = document.getElementById('chatbox');
-  const userInput = document.getElementById('userInput');
-  const sendBtn = document.getElementById('sendBtn');
+  const placeSelect = document.getElementById('placeSelect');
+  const categorySelect = document.getElementById('categorySelect');
+  const faqButtons = document.getElementById('faqButtons');
 
   function appendMessage(text, sender) {
     const msg = document.createElement('div');
@@ -233,50 +198,17 @@
     if (typing) typing.remove();
   }
 
-  // Variables to hold user selections
-  let selectedPlace = "";
-  let selectedCategory = "";
+  // Fetch contacts when both dropdowns have a selection
+  function tryFetchContacts() {
+    const place = placeSelect.value;
+    const category = categorySelect.value;
+    if (!place || !category) return;
 
-  function updateSendButton() {
-    // Enable send button only if both place and category are selected
-    sendBtn.disabled = !(selectedPlace && selectedCategory);
-    // Disable user input text box as this chatbot uses buttons only
-    userInput.disabled = true;
-  }
-
-  // Handle clicks on place buttons
-  document.querySelectorAll('.place-btn').forEach(button => {
-  button.addEventListener('click', () => {
-    selectedPlace = button.textContent;
-    appendMessage(`You selected place: ${selectedPlace}`, 'user');
-    if (selectedCategory) {
-      sendMessage();
-    }
-  });
-});
-
-  // Handle clicks on category buttons
-  document.querySelectorAll('.category-btn').forEach(button => {
-  button.addEventListener('click', () => {
-    selectedCategory = button.textContent;
-    appendMessage(`You selected category: ${selectedCategory}`, 'user');
-    if (selectedPlace) {
-      sendMessage();
-    }
-  });
-});
-
-  function sendMessage() {
-    if (!selectedPlace || !selectedCategory) {
-      alert("Please select both Place and Category.");
-      return;
-    }
-
-    appendMessage(`Fetching contacts for ${selectedCategory} in ${selectedPlace}...`, 'user');
+    appendMessage(`Fetching contacts for ${category} in ${place}...`, 'user');
     appendTyping();
 
-    fetch(`https://script.google.com/macros/s/AKfycbznzh4STNo9GBGk-v0Z1dpC9RzRo8OnpJqQ5R8TahleI7vLIqUOOn0crGcKeanmAGNNFQ/exec?place=${encodeURIComponent(selectedPlace)}&category=${encodeURIComponent(selectedCategory)}`)
-      .then(response => response.json())
+    fetch(`https://script.google.com/macros/s/AKfycbzAXKP612da-BRxm0Ab0nZKum-hl6rdLOWcxYxC48P3XOccHsfECzB8p_xlRnYP7UAy0Q/exec?place=${encodeURIComponent(place)}&category=${encodeURIComponent(category)}`)
+      .then(res => res.json())
       .then(data => {
         removeTyping();
         appendMessage(data.reply, 'bot');
@@ -285,18 +217,34 @@
         removeTyping();
         appendMessage("Sorry, I couldn't reach the server. Please try again.", 'bot');
       });
-
-    // Reset selections and disable send button again
-    selectedPlace = "";
-    selectedCategory = "";
-    updateSendButton();
   }
 
-  sendBtn.addEventListener('click', sendMessage);
+  placeSelect.addEventListener('change', tryFetchContacts);
+  categorySelect.addEventListener('change', tryFetchContacts);
 
-  // Show welcome message when page loads
-  window.onload = function() {
-    appendMessage('Hi, I am Mithra! Please select a Place and Category below.', 'bot');
+  // FAQ button clicks
+  faqButtons.addEventListener('click', e => {
+    if (e.target.tagName === 'BUTTON') {
+      const question = e.target.getAttribute('data-faq');
+      appendMessage(question, 'user');
+      appendTyping();
+
+      fetch(`https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec?faq=${encodeURIComponent(question)}`)
+        .then(res => res.json())
+        .then(data => {
+          removeTyping();
+          appendMessage(data.reply, 'bot');
+        })
+        .catch(() => {
+          removeTyping();
+          appendMessage("Sorry, I couldn't reach the server. Please try again.", 'bot');
+        });
+    }
+  });
+
+  // Welcome message on page load
+  window.onload = () => {
+    appendMessage('Hi, I am Mithra! Please select a Place and Category or ask a FAQ below.', 'bot');
   };
 </script>
 
