@@ -3,82 +3,81 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>callMithra Chatbot</title>
+<title>CallMithra Chatbot</title>
 <style>
   body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: white;
+    background: #f4f4f4;
     margin: 0;
     padding: 20px;
     display: flex;
     justify-content: center;
   }
+
   .chat-container {
     background: white;
     width: 100%;
-    max-width: 480px;
-    height: 580px;
-    border-radius: 12px;
+    max-width: 450px;
+    height: 600px;
+    border-radius: 15px;
     box-shadow: 0 8px 20px rgba(0,0,0,0.15);
     display: flex;
     flex-direction: column;
   }
+
   .header {
     padding: 20px;
     background: white;
-    color: #d47c16; /* Dark saffron */
+    color: #FF9933; /* Dark Saffron */
     font-size: 1.8rem;
     font-weight: 700;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
     text-align: center;
-    border-bottom: 2px solid #d47c16;
-    border-top-left-radius: 12px;
-    border-top-right-radius: 12px;
-  }
-  #buttonsArea {
-    padding: 15px 20px;
     border-bottom: 1px solid #ddd;
   }
-  #buttonsArea label {
-    font-weight: 600;
-    color: #333;
+
+  #buttonsArea {
+    padding: 15px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
   }
+
   select {
-    width: 100%;
-    margin-top: 6px;
-    margin-bottom: 14px;
-    padding: 8px 12px;
-    font-size: 1rem;
+    margin: 8px;
+    padding: 10px;
     border-radius: 8px;
-    border: 1.8px solid #007bff;
-    outline: none;
-    cursor: pointer;
+    border: 1px solid #ccc;
+    font-size: 1rem;
   }
-  select:focus {
-    border-color: #d47c16;
-  }
+
   #chatbox {
     flex-grow: 1;
     padding: 20px;
     overflow-y: auto;
     background: #fafafa;
   }
+
   #chatbox::-webkit-scrollbar {
     width: 6px;
   }
+
   #chatbox::-webkit-scrollbar-thumb {
-    background: #d47c16;
+    background: #007bff;
     border-radius: 3px;
   }
+
   .message {
-    margin-bottom: 16px;
+    margin-bottom: 15px;
     max-width: 80%;
-    padding: 14px 20px;
+    padding: 12px 18px;
     border-radius: 20px;
     clear: both;
-    white-space: pre-wrap;
     animation: fadeInUp 0.3s ease forwards;
     opacity: 0;
+    white-space: pre-wrap;
   }
+
   .message.user {
     background: #007bff;
     color: white;
@@ -86,29 +85,24 @@
     border-bottom-right-radius: 4px;
     animation-delay: 0.1s;
   }
+
   .message.bot {
-    background: #f9f9f9;
-    color: #111; /* darkest black for answers */
+    background: #f1f0f0;
+    color: #000000; /* Darkest black for answers */
     float: left;
     border-bottom-left-radius: 4px;
     animation-delay: 0.2s;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
   }
+
   .typing {
     font-style: italic;
     color: gray;
-    margin-bottom: 16px;
-    clear: both;
+    margin-bottom: 15px;
   }
+
   @keyframes fadeInUp {
-    from {
-      opacity: 0;
-      transform: translateY(15px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
   }
 </style>
 </head>
@@ -118,34 +112,39 @@
   <div class="header">callMithra</div>
 
   <div id="buttonsArea">
-    <label for="placeSelect">Select Place:</label>
-    <select id="placeSelect">
-      <option value="">-- Select Place --</option>
-      <option>Alampallam</option>
-      <option>Kollengode</option>
-      <option>Mathur</option>
-      <!-- Add more places as needed -->
-    </select>
+    <div>
+      <strong>Select Place:</strong><br />
+      <select id="placeSelect">
+        <option value="">-- Select Place --</option>
+        <option value="Alampallam">Alampallam</option>
+        <option value="Kollengode">Kollengode</option>
+        <option value="Mathur">Mathur</option>
+      </select>
+    </div>
 
-    <label for="categorySelect">Select Category:</label>
-    <select id="categorySelect">
-      <option value="">-- Select Category --</option>
-      <option>Caterers</option>
-      <option>Business</option>
-      <option>Advocates</option>
-      <option>Temple Priests</option>
-      <!-- Add more categories if needed -->
-    </select>
+    <div style="margin-top:10px;">
+      <strong>Select Category:</strong><br />
+      <select id="categorySelect">
+        <option value="">-- Select Category --</option>
+        <option value="Caterers">Caterers</option>
+        <option value="Vaideekhal">Vaideekhal</option>
+        <option value="Other Services">Other Services</option>
+        <option value="Business">Business</option>
+        <option value="Advocates">Advocates</option>
+        <option value="Temple Priests">Temple Priests</option>
+      </select>
+    </div>
 
-    <label for="faqSelect">Select FAQ:</label>
-    <select id="faqSelect">
-      <option value="">-- Select FAQ --</option>
-      <option>Who is Mithra ?</option>
-      <option>Can we use Call Mithra App free ?</option>
-      <option>Are the phone numbers updated often ?</option>
-      <option>Contact Mithra</option>
-      <!-- Add more FAQs here -->
-    </select>
+    <div style="margin-top:10px;">
+      <strong>Select FAQ:</strong><br />
+      <select id="faqSelect">
+        <option value="">-- Select FAQ --</option>
+        <option value="Who is Mithra ?">Who is Mithra ?</option>
+        <option value="Can we use Call Mithra App free ?">Can we use Call Mithra App free ?</option>
+        <option value="Are the phone numbers updated often ?">Are the phone numbers updated often ?</option>
+        <option value="Contact Mithra">Contact Mithra</option>
+      </select>
+    </div>
   </div>
 
   <div id="chatbox"></div>
@@ -156,6 +155,9 @@
   const placeSelect = document.getElementById('placeSelect');
   const categorySelect = document.getElementById('categorySelect');
   const faqSelect = document.getElementById('faqSelect');
+
+  const contactsURL = 'https://script.google.com/macros/s/AKfycbwg7tyWglnjVDzPqurXKZ9tT5PfK5mhgAJxCnh_p02F_TFkdS2_EROJjpVZLq7UAGBEwA/exec';
+  const faqURL = 'https://script.google.com/macros/s/AKfycby1syxg1eqxfRPJjbHDsGDpH_dZfEONFnbxt8X_uHnKCEossPeG3jG2WgEayVncQkxY/exec';
 
   function appendMessage(text, sender) {
     const msg = document.createElement('div');
@@ -179,58 +181,73 @@
     if (typing) typing.remove();
   }
 
-  // On page load, greet user
-  window.onload = () => {
-    appendMessage('Hi, I am Mithra! Please select a Place and Category to get contacts, or select a FAQ question.', 'bot');
-  };
-
-  // When place and category are selected, fetch contacts automatically
-  function tryFetchContacts() {
-    const place = placeSelect.value;
-    const category = categorySelect.value;
+  function fetchContacts(place, category) {
     if (!place || !category) return;
 
-    appendMessage(`You selected Place: ${place}`, 'user');
-    appendMessage(`You selected Category: ${category}`, 'user');
+    appendMessage(`Fetching contacts for ${category} in ${place}...`, 'user');
     appendTyping();
 
-    fetch(`https://script.google.com/macros/s/AKfycbym3g-jSfOqYps5Ubv3s8DCSwa6dLGSlRMHJoPZgbT1H5Io9Ohmd9ZwhOtF5lvbuGI8/exec?place=${encodeURIComponent(place)}&category=${encodeURIComponent(category)}`)
-      .then(res => res.json())
+    fetch(`${contactsURL}?place=${encodeURIComponent(place)}&category=${encodeURIComponent(category)}`)
+      .then(response => response.json())
       .then(data => {
         removeTyping();
         appendMessage(data.reply, 'bot');
       })
       .catch(() => {
         removeTyping();
-        appendMessage("Sorry, I couldn't reach the server for contacts. Please try again.", 'bot');
+        appendMessage("Sorry, I couldn't reach the server. Please try again.", 'bot');
       });
   }
 
-  placeSelect.addEventListener('change', tryFetchContacts);
-  categorySelect.addEventListener('change', tryFetchContacts);
+  function fetchFAQ(faqQuestion) {
+    if (!faqQuestion) return;
 
-  // When FAQ question is selected, fetch answer immediately
-  faqSelect.addEventListener('change', () => {
-    const faq = faqSelect.value;
-    if (!faq) return;
-
-    appendMessage(`You asked: ${faq}`, 'user');
+    appendMessage(`You selected: ${faqQuestion}`, 'user');
     appendTyping();
 
-    fetch(`https://script.google.com/macros/s/AKfycbx14ZmGIVgDbh1XSIYztxVyhzY765gI4SiZX8ajTRQOabZcwafCb73vdvVKEJFiW7Ok/exec?faq=${encodeURIComponent(faq)}`)
-      .then(res => res.json())
+    fetch(`${faqURL}?faq=${encodeURIComponent(faqQuestion)}`)
+      .then(response => response.json())
       .then(data => {
         removeTyping();
         appendMessage(data.reply, 'bot');
       })
       .catch(() => {
         removeTyping();
-        appendMessage("Sorry, I couldn't reach the server for FAQ. Please try again.", 'bot');
+        appendMessage("Sorry, I couldn't reach the server. Please try again.", 'bot');
       });
+  }
 
-    // Reset FAQ dropdown to placeholder after fetching
-    faqSelect.value = "";
+  placeSelect.addEventListener('change', () => {
+    const selectedPlace = placeSelect.value;
+    const selectedCategory = categorySelect.value;
+    if (selectedPlace && selectedCategory) {
+      fetchContacts(selectedPlace, selectedCategory);
+      placeSelect.value = '';
+      categorySelect.value = '';
+    }
   });
+
+  categorySelect.addEventListener('change', () => {
+    const selectedPlace = placeSelect.value;
+    const selectedCategory = categorySelect.value;
+    if (selectedPlace && selectedCategory) {
+      fetchContacts(selectedPlace, selectedCategory);
+      placeSelect.value = '';
+      categorySelect.value = '';
+    }
+  });
+
+  faqSelect.addEventListener('change', () => {
+    const selectedFAQ = faqSelect.value;
+    if (selectedFAQ) {
+      fetchFAQ(selectedFAQ);
+      faqSelect.value = '';
+    }
+  });
+
+  window.onload = function() {
+    appendMessage('Hi, I am Mithra! Please select a Place and Category to find contacts, or select a FAQ below.', 'bot');
+  };
 </script>
 
 </body>
