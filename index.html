@@ -246,21 +246,25 @@
 
   // Handle clicks on place buttons
   document.querySelectorAll('.place-btn').forEach(button => {
-    button.addEventListener('click', () => {
-      selectedPlace = button.textContent;
-      appendMessage(`You selected place: ${selectedPlace}`, 'user');
-      updateSendButton();
-    });
+  button.addEventListener('click', () => {
+    selectedPlace = button.textContent;
+    appendMessage(`You selected place: ${selectedPlace}`, 'user');
+    if (selectedCategory) {
+      sendMessage();
+    }
   });
+});
 
   // Handle clicks on category buttons
   document.querySelectorAll('.category-btn').forEach(button => {
-    button.addEventListener('click', () => {
-      selectedCategory = button.textContent;
-      appendMessage(`You selected category: ${selectedCategory}`, 'user');
-      updateSendButton();
-    });
+  button.addEventListener('click', () => {
+    selectedCategory = button.textContent;
+    appendMessage(`You selected category: ${selectedCategory}`, 'user');
+    if (selectedPlace) {
+      sendMessage();
+    }
   });
+});
 
   function sendMessage() {
     if (!selectedPlace || !selectedCategory) {
