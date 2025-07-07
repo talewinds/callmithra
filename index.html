@@ -1,186 +1,249 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>callMithra</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #e9ecef;
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-        }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Call Mithra</title>
+<style>
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f7f7f7;
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+  }
 
-        .chat-container {
-            background: white;
-            width: 100%;
-            max-width: 450px;
-            height: 550px;
-            border-radius: 12px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-            display: flex;
-            flex-direction: column;
-        }
+  .chat-container {
+    background: white;
+    width: 100%;
+    max-width: 460px;
+    height: 600px;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    display: flex;
+    flex-direction: column;
+  }
 
-        .header {
-            padding: 20px;
-            background: white;
-            color: #FF9933;
-            font-size: 1.6rem;
-            font-weight: 700;
-            border-top-left-radius: 12px;
-            border-top-right-radius: 12px;
-            text-align: center;
-        }
+  .header {
+    padding: 20px;
+    background: white;
+    color: #FF9933; /* Dark Saffron */
+    font-size: 1.6rem;
+    font-weight: 700;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+    text-align: center;
+  }
 
-        #chatbox {
-            flex-grow: 1;
-            padding: 20px;
-            overflow-y: auto;
-            border-bottom: 1px solid #ddd;
-            background: #fafafa;
-        }
+  #buttonsArea {
+    padding: 10px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+  }
 
-        .message {
-            margin-bottom: 15px;
-            max-width: 80%;
-            padding: 12px 18px;
-            border-radius: 20px;
-            clear: both;
-            animation: fadeInUp 0.3s ease forwards;
-            opacity: 0;
-            white-space: pre-wrap;
-        }
+  select {
+    margin: 8px;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1.5px solid #007bff;
+    font-weight: 600;
+  }
 
-        .message.user {
-            background: #007bff;
-            color: white;
-            float: right;
-            border-bottom-right-radius: 4px;
-            animation-delay: 0.1s;
-        }
+  #chatbox {
+    flex-grow: 1;
+    padding: 20px;
+    overflow-y: auto;
+    border-bottom: 1px solid #ddd;
+    background: #fafafa;
+  }
 
-        .message.bot {
-            background: #f1f0f0;
-            color: black;
-            float: left;
-            border-bottom-left-radius: 4px;
-            animation-delay: 0.2s;
-        }
+  #chatbox::-webkit-scrollbar {
+    width: 6px;
+  }
+  #chatbox::-webkit-scrollbar-thumb {
+    background: #007bff;
+    border-radius: 3px;
+  }
 
-        .typing {
-            font-style: italic;
-            color: gray;
-            margin-bottom: 15px;
-        }
+  .message {
+    margin-bottom: 15px;
+    max-width: 80%;
+    padding: 12px 18px;
+    border-radius: 20px;
+    clear: both;
+    animation: fadeInUp 0.3s ease forwards;
+    opacity: 0;
+    white-space: pre-wrap;
+  }
 
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(15px);
-            }
+  .message.user {
+    background: #007bff;
+    color: white;
+    float: right;
+    border-bottom-right-radius: 4px;
+    animation-delay: 0.1s;
+  }
 
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
+  .message.bot {
+    background: #000000; /* Darkest Black */
+    color: white;
+    float: left;
+    border-bottom-left-radius: 4px;
+    animation-delay: 0.2s;
+  }
 
-        #dropdownArea {
-            padding: 20px;
-            text-align: center;
-        }
+  .typing {
+    font-style: italic;
+    color: gray;
+    margin-bottom: 15px;
+  }
 
-        select {
-            padding: 10px;
-            border-radius: 6px;
-            border: 1px solid #007bff;
-            font-size: 1rem;
-        }
-    </style>
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(15px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+</style>
 </head>
-
 <body>
 
-    <div class="chat-container">
-        <div class="header">callMithra</div>
+<div class="chat-container">
+  <div class="header">callMithra</div>
 
-        <div id="chatbox"></div>
-
-        <div id="dropdownArea">
-            <strong>Select FAQ:</strong><br><br>
-            <select id="faqSelect">
-                <option value="">-- Select FAQ --</option>
-                <option value="Who is Mithra ?">Who is Mithra ?</option>
-                <option value="Can we use Call Mithra App free ?">Can we use Call Mithra App free ?</option>
-                <option value="Are the phone numbers updated often ?">Are the phone numbers updated often ?</option>
-                <option value="Contact Mithra">Contact Mithra</option>
-                <!-- Add more FAQs here if needed -->
-            </select>
-        </div>
+  <div id="buttonsArea">
+    <div>
+      <strong>Select Place:</strong><br />
+      <select id="placeSelect">
+        <option value="">-- Select Place --</option>
+        <option value="Alampallam">Alampallam</option>
+        <option value="Kollengode">Kollengode</option>
+        <option value="Mathur">Mathur</option>
+      </select>
     </div>
 
-    <script>
-        const chatbox = document.getElementById('chatbox');
-        const faqSelect = document.getElementById('faqSelect');
+    <div style="margin-top:10px;">
+      <strong>Select Category:</strong><br />
+      <select id="categorySelect">
+        <option value="">-- Select Category --</option>
+        <option value="Caterers">Caterers</option>
+        <option value="Vaideekhal">Vaideekhal</option>
+        <option value="Other Services">Other Services</option>
+        <option value="Business">Business</option>
+        <option value="Advocates">Advocates</option>
+        <option value="Temple Priests">Temple Priests</option>
+      </select>
+    </div>
 
-        function appendMessage(text, sender) {
-            const msg = document.createElement('div');
-            msg.classList.add('message', sender);
-            msg.textContent = text;
-            chatbox.appendChild(msg);
-            chatbox.scrollTop = chatbox.scrollHeight;
-        }
+    <div style="margin-top:10px;">
+      <strong>Select FAQ:</strong><br />
+      <select id="faqSelect">
+        <option value="">-- Select FAQ --</option>
+        <option value="Who is Mithra ?">Who is Mithra ?</option>
+        <option value="Can we use Call Mithra App free ?">Can we use Call Mithra App free ?</option>
+        <option value="Are the phone numbers updated often ?">Are the phone numbers updated often ?</option>
+        <option value="Contact Mithra">Contact Mithra</option>
+      </select>
+    </div>
+  </div>
 
-        function appendTyping() {
-            const typing = document.createElement('div');
-            typing.classList.add('typing');
-            typing.id = 'typingIndicator';
-            typing.textContent = 'Mithra is typing...';
-            chatbox.appendChild(typing);
-            chatbox.scrollTop = chatbox.scrollHeight;
-        }
+  <div id="chatbox"></div>
+</div>
 
-        function removeTyping() {
-            const typing = document.getElementById('typingIndicator');
-            if (typing) typing.remove();
-        }
+<script>
+  const chatbox = document.getElementById('chatbox');
+  const placeSelect = document.getElementById('placeSelect');
+  const categorySelect = document.getElementById('categorySelect');
+  const faqSelect = document.getElementById('faqSelect');
 
-        function fetchFAQ(faq) {
-            if (!faq) return;
+  function appendMessage(text, sender) {
+    const msg = document.createElement('div');
+    msg.classList.add('message', sender);
+    msg.textContent = text;
+    chatbox.appendChild(msg);
+    chatbox.scrollTop = chatbox.scrollHeight;
+  }
 
-            appendMessage(faq, 'user');
-            appendTyping();
+  function appendTyping() {
+    const typing = document.createElement('div');
+    typing.classList.add('typing');
+    typing.id = 'typingIndicator';
+    typing.textContent = 'Mithra is typing...';
+    chatbox.appendChild(typing);
+    chatbox.scrollTop = chatbox.scrollHeight;
+  }
 
-            fetch(`https://script.google.com/macros/s/AKfycbyADWGJ7HPGBl0UHiCdWyQYoHAz2lUf2nrJvpCpSLz4dXQW3NfTYvi-lOdvgy4jjbN1bA/exec?faq=${encodeURIComponent(faq)}`)
-                .then(response => response.json())
-                .then(data => {
-                    removeTyping();
-                    appendMessage(data.reply, 'bot');
-                })
-                .catch(() => {
-                    removeTyping();
-                    appendMessage("Sorry, I couldn't reach the server. Please try again.", 'bot');
-                });
-        }
+  function removeTyping() {
+    const typing = document.getElementById('typingIndicator');
+    if (typing) typing.remove();
+  }
 
-        faqSelect.addEventListener('change', () => {
-            const selectedFAQ = faqSelect.value;
-            if (selectedFAQ) {
-                fetchFAQ(selectedFAQ);
-                faqSelect.selectedIndex = 0; // Reset selection after answering
-            }
-        });
+  placeSelect.addEventListener('change', () => {
+    if (placeSelect.value && categorySelect.value) {
+      sendContactRequest(placeSelect.value, categorySelect.value);
+    }
+  });
 
-        window.onload = function () {
-            appendMessage('Hi, I am Mithra! Please select a question from the FAQ dropdown below.', 'bot');
-        };
-    </script>
+  categorySelect.addEventListener('change', () => {
+    if (placeSelect.value && categorySelect.value) {
+      sendContactRequest(placeSelect.value, categorySelect.value);
+    }
+  });
+
+  faqSelect.addEventListener('change', () => {
+    if (faqSelect.value) {
+      sendFaqRequest(faqSelect.value);
+    }
+  });
+
+  function sendContactRequest(place, category) {
+    appendMessage(`Fetching contacts for ${category} in ${place}...`, 'user');
+    appendTyping();
+
+    fetch(`https://script.google.com/macros/s/AKfycbyADWGJ7HPGBl0UHiCdWyQYoHAz2lUf2nrJvpCpSLz4dXQW3NfTYvi-lOdvgy4jjbN1bA/exec?place=${encodeURIComponent(place)}&category=${encodeURIComponent(category)}`)
+      .then(response => response.json())
+      .then(data => {
+        removeTyping();
+        appendMessage(data.reply, 'bot');
+      })
+      .catch(() => {
+        removeTyping();
+        appendMessage("Sorry, I couldn't reach the server. Please try again.", 'bot');
+      });
+
+    // Reset selections
+    placeSelect.value = "";
+    categorySelect.value = "";
+  }
+
+  function sendFaqRequest(faq) {
+    appendMessage(`You asked: ${faq}`, 'user');
+    appendTyping();
+
+    fetch(`https://script.google.com/macros/s/AKfycby26KL1Ymt5XcnWhB3XNl8wtp4vu9FWsdGC7BExuq0jsEmDTlcjHYd_aJnyh5Kj9WEU3Q/exec?faq=${encodeURIComponent(faq)}`)
+      .then(response => response.json())
+      .then(data => {
+        removeTyping();
+        appendMessage(data.reply, 'bot');
+      })
+      .catch(() => {
+        removeTyping();
+        appendMessage("Sorry, I couldn't reach the server. Please try again.", 'bot');
+      });
+
+    faqSelect.value = "";
+  }
+
+  // Show welcome message when page loads
+  window.onload = function() {
+    appendMessage('Hi, I am Mithra! Please select a Place, Category or FAQ below.', 'bot');
+  };
+</script>
 
 </body>
-
 </html>
