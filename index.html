@@ -196,7 +196,7 @@
 
     appendTyping();
 
-    fetch('https://script.google.com/macros/s/AKfycbznzh4STNo9GBGk-v0Z1dpC9RzRo8OnpJqQ5R8TahleI7vLIqUOOn0crGcKeanmAGNNFQ/exec?query=' + encodeURIComponent(text))
+    fetch('https://script.google.com/macros/s/AKfycbznzh4STNo9GBGk-v0Z1dpC9RzRo8OnpJqQ5R8TahleI7vLIqUOOn0crGcKeanmAGNNFQ/exec' + encodeURIComponent(text))
       .then(response => response.json())
       .then(data => {
         removeTyping();
