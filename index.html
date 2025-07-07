@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>callMithra Chatbot</title>
+<title>callMithra</title>
 <style>
   body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -13,51 +13,37 @@
     display: flex;
     justify-content: center;
   }
+
   .chat-container {
     background: white;
     width: 100%;
     max-width: 420px;
-    height: 540px;
+    height: 620px;
     border-radius: 12px;
     box-shadow: 0 8px 20px rgba(0,0,0,0.15);
     display: flex;
     flex-direction: column;
   }
+
   .header {
     padding: 20px;
     background: white;
-    color: #FF9933; /* dark saffron */
-    font-size: 1.6rem;
+    color: #FF9933; /* Dark Saffron */
+    font-size: 1.8rem;
     font-weight: 700;
     border-top-left-radius: 12px;
     border-top-right-radius: 12px;
     text-align: center;
-    user-select: none;
   }
-  #selectionArea {
-    padding: 12px 20px;
+
+  #buttonsArea {
+    padding: 10px;
+    text-align: center;
     border-bottom: 1px solid #ddd;
   }
-  select {
-    width: 48%;
-    margin: 0 1% 10px 0;
-    padding: 8px 12px;
-    font-size: 1rem;
-    border: 2px solid #007bff;
-    border-radius: 6px;
-    cursor: pointer;
-    outline: none;
-    transition: border-color 0.3s ease;
-  }
-  select:hover, select:focus {
-    border-color: #0056b3;
-  }
-  #faqButtons {
-    margin-top: 10px;
-    text-align: center;
-  }
-  #faqButtons button {
-    margin: 5px 6px;
+
+  select, button {
+    margin: 6px;
     padding: 8px 14px;
     border-radius: 20px;
     border: none;
@@ -66,24 +52,29 @@
     cursor: pointer;
     font-weight: 600;
     transition: background-color 0.3s ease;
-    user-select: none;
   }
-  #faqButtons button:hover {
+
+  button:hover {
     background: #0056b3;
   }
+
   #chatbox {
     flex-grow: 1;
     padding: 20px;
     overflow-y: auto;
+    border-bottom: 1px solid #ddd;
     background: #fafafa;
   }
+
   #chatbox::-webkit-scrollbar {
     width: 6px;
   }
+
   #chatbox::-webkit-scrollbar-thumb {
     background: #007bff;
     border-radius: 3px;
   }
+
   .message {
     margin-bottom: 15px;
     max-width: 80%;
@@ -94,6 +85,7 @@
     opacity: 0;
     white-space: pre-wrap;
   }
+
   .message.user {
     background: #007bff;
     color: white;
@@ -101,18 +93,21 @@
     border-bottom-right-radius: 4px;
     animation-delay: 0.1s;
   }
+
   .message.bot {
     background: #f1f0f0;
-    color: #000000; /* darkest black */
+    color: #000000; /* Darkest black */
     float: left;
     border-bottom-left-radius: 4px;
     animation-delay: 0.2s;
   }
+
   .typing {
     font-style: italic;
     color: gray;
     margin-bottom: 15px;
   }
+
   @keyframes fadeInUp {
     from {
       opacity: 0;
@@ -123,6 +118,7 @@
       transform: translateY(0);
     }
   }
+
   @media (max-width: 480px) {
     .chat-container {
       height: 100vh;
@@ -132,8 +128,8 @@
     #chatbox {
       padding: 12px;
     }
-    #selectionArea {
-      padding: 10px;
+    #buttonsArea {
+      padding: 12px;
     }
   }
 </style>
@@ -141,32 +137,44 @@
 <body>
 
 <div class="chat-container">
-  <div class="header">Call Mithra</div>
+  <div class="header">callMithra</div>
 
-  <div id="selectionArea">
-    <select id="placeSelect">
-      <option value="" disabled selected>Select Place</option>
-      <option>Alampallam</option>
-      <option>Kollengode</option>
-      <option>Mathur</option>
-      <!-- add more places here -->
-    </select>
-
-    <select id="categorySelect">
-      <option value="" disabled selected>Select Category</option>
-      <option>Caterers</option>
-      <option>Vaideekhal</option>
-      <option>Other Services</option>
-      <option>Advocates</option>
-      <option>Temple Priests</option>
-      <!-- add more categories here -->
-    </select>
-
-    <div id="faqButtons">
-      <button data-faq="How to contact support?">How to contact support?</button>
-      <button data-faq="How to book a caterer?">How to book a caterer?</button>
-      <!-- add more FAQ buttons here -->
+  <div id="buttonsArea">
+    <div style="margin-bottom:10px;">
+      <strong>Select Place:</strong><br />
+      <select id="placeSelect">
+        <option value="">-- Select Place --</option>
+        <option value="Alampallam">Alampallam</option>
+        <option value="Kollengode">Kollengode</option>
+        <option value="Mathur">Mathur</option>
+      </select>
     </div>
+
+    <div style="margin-bottom:10px;">
+      <strong>Select Category:</strong><br />
+      <select id="categorySelect">
+        <option value="">-- Select Category --</option>
+        <option value="Caterers">Caterers</option>
+        <option value="Vaideekhal">Vaideekhal</option>
+        <option value="Other Services">Other Services</option>
+        <option value="Business">Business</option>
+        <option value="Advocates">Advocates</option>
+        <option value="Temple Priests">Temple Priests</option>
+      </select>
+    </div>
+
+    <div style="margin-bottom:10px;">
+      <strong>Select FAQ:</strong><br />
+      <select id="faqSelect">
+        <option value="">-- Select FAQ --</option>
+        <option value="What is callMithra?">What is callMithra?</option>
+        <option value="How to use callMithra?">How to use callMithra?</option>
+        <option value="Can I add new contacts?">Can I add new contacts?</option>
+      </select>
+      <button id="faqBtn">Ask FAQ</button>
+    </div>
+
+    <button id="fetchBtn">Get Contacts</button>
   </div>
 
   <div id="chatbox"></div>
@@ -176,7 +184,11 @@
   const chatbox = document.getElementById('chatbox');
   const placeSelect = document.getElementById('placeSelect');
   const categorySelect = document.getElementById('categorySelect');
-  const faqButtons = document.getElementById('faqButtons');
+  const faqSelect = document.getElementById('faqSelect');
+  const fetchBtn = document.getElementById('fetchBtn');
+  const faqBtn = document.getElementById('faqBtn');
+
+  const webAppURL = "https://script.google.com/macros/s/AKfycby26KL1Ymt5XcnWhB3XNl8wtp4vu9FWsdGC7BExuq0jsEmDTlcjHYd_aJnyh5Kj9WEU3Q/exec";
 
   function appendMessage(text, sender) {
     const msg = document.createElement('div');
@@ -200,17 +212,20 @@
     if (typing) typing.remove();
   }
 
-  // Fetch contacts when both dropdowns have a selection
-  function tryFetchContacts() {
-    const place = placeSelect.value;
-    const category = categorySelect.value;
-    if (!place || !category) return;
+  fetchBtn.addEventListener('click', () => {
+    const selectedPlace = placeSelect.value;
+    const selectedCategory = categorySelect.value;
 
-    appendMessage(`Fetching contacts for ${category} in ${place}...`, 'user');
+    if (!selectedPlace || !selectedCategory) {
+      alert("Please select both Place and Category.");
+      return;
+    }
+
+    appendMessage(`Fetching contacts for ${selectedCategory} in ${selectedPlace}...`, 'user');
     appendTyping();
 
-    fetch(`https://script.google.com/macros/s/AKfycbzAXKP612da-BRxm0Ab0nZKum-hl6rdLOWcxYxC48P3XOccHsfECzB8p_xlRnYP7UAy0Q/exec?place=${encodeURIComponent(place)}&category=${encodeURIComponent(category)}`)
-      .then(res => res.json())
+    fetch(`${webAppURL}?place=${encodeURIComponent(selectedPlace)}&category=${encodeURIComponent(selectedCategory)}`)
+      .then(response => response.json())
       .then(data => {
         removeTyping();
         appendMessage(data.reply, 'bot');
@@ -219,34 +234,34 @@
         removeTyping();
         appendMessage("Sorry, I couldn't reach the server. Please try again.", 'bot');
       });
-  }
-
-  placeSelect.addEventListener('change', tryFetchContacts);
-  categorySelect.addEventListener('change', tryFetchContacts);
-
-  // FAQ button clicks
-  faqButtons.addEventListener('click', e => {
-    if (e.target.tagName === 'BUTTON') {
-      const question = e.target.getAttribute('data-faq');
-      appendMessage(question, 'user');
-      appendTyping();
-
-      fetch(`https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec?faq=${encodeURIComponent(question)}`)
-        .then(res => res.json())
-        .then(data => {
-          removeTyping();
-          appendMessage(data.reply, 'bot');
-        })
-        .catch(() => {
-          removeTyping();
-          appendMessage("Sorry, I couldn't reach the server. Please try again.", 'bot');
-        });
-    }
   });
 
-  // Welcome message on page load
-  window.onload = () => {
-    appendMessage('Hi, I am Mithra! Please select a Place and Category or ask a FAQ below.', 'bot');
+  faqBtn.addEventListener('click', () => {
+    const selectedFAQ = faqSelect.value;
+
+    if (!selectedFAQ) {
+      alert("Please select an FAQ.");
+      return;
+    }
+
+    appendMessage(`You asked: ${selectedFAQ}`, 'user');
+    appendTyping();
+
+    fetch(`${webAppURL}?faq=${encodeURIComponent(selectedFAQ)}`)
+      .then(response => response.json())
+      .then(data => {
+        removeTyping();
+        appendMessage(data.reply, 'bot');
+      })
+      .catch(() => {
+        removeTyping();
+        appendMessage("Sorry, I couldn't reach the server. Please try again.", 'bot');
+      });
+  });
+
+  // Show welcome message when page loads
+  window.onload = function() {
+    appendMessage('Hi, I am Mithra! Please select a Place, Category, or ask a FAQ.', 'bot');
   };
 </script>
 
