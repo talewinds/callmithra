@@ -3,246 +3,341 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>callMithra</title>
+  <title>callMithra Chatbot</title>
   <style>
     body {
-      font-family: 'Segoe UI', sans-serif;
-      margin: 0;
-      padding: 0;
-      background: #f4f4f4;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f5f5f5;
+      margin: 0; padding: 20px;
+      display: flex; justify-content: center;
     }
     .chat-container {
+      background: white;
+      width: 100%;
       max-width: 480px;
-      margin: 0 auto;
-      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+      display: flex;
+      flex-direction: column;
       padding: 20px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     }
     .header {
+      color: #FF9933;
+      font-size: 1.8rem;
+      font-weight: 700;
       text-align: center;
-      font-size: 1.8em;
-      font-weight: bold;
-      color: #ff9933;
+      margin-bottom: 4px;
     }
     .slogan {
+      font-style: italic;
+      color: #666;
       text-align: center;
-      font-size: 1em;
-      color: #555;
       margin-bottom: 20px;
     }
-    select, button {
-      width: 100%;
+    label {
+      font-weight: 600;
       margin-top: 10px;
-      padding: 10px;
-      font-size: 1em;
-      border: 1px solid #ccc;
-      border-radius: 6px;
+      display: block;
+      color: #333;
     }
-    .chatbox {
+    select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 6px;
+      border-radius: 6px;
+      border: 1.5px solid #ccc;
+      font-size: 1rem;
+    }
+    button {
+      margin-top: 12px;
+      padding: 10px 15px;
+      font-size: 1rem;
+      cursor: pointer;
+      border-radius: 6px;
+      border: none;
+      background-color: #FF9933;
+      color: white;
+    }
+    #chatbox {
       margin-top: 20px;
       min-height: 180px;
-      background: #f9f9f9;
-      padding: 10px;
-      border-radius: 6px;
-      border: 1px solid #ccc;
+      background: #fafafa;
+      border-radius: 8px;
+      padding: 15px;
+      border: 1px solid #ddd;
       white-space: pre-wrap;
+      overflow-y: auto;
     }
-    .message {
+    .message-card {
+      background: #800000;
+      color: white;
+      padding: 12px;
+      border-radius: 10px;
       margin-bottom: 12px;
     }
-    .bot {
-      color: maroon;
+    .error-card {
+      background: #cc0000;
+      color: white;
+      padding: 12px;
+      border-radius: 10px;
+      margin-bottom: 12px;
     }
-    .user {
-      color: #007bff;
-      text-align: right;
-      font-weight: bold;
+    .contact-card {
+      background: #fdf0f0;
+      border: 1.5px solid #800000;
+      padding: 12px;
+      border-radius: 10px;
+      margin-bottom: 10px;
     }
-    .error {
-      color: red;
+    .contact-header {
+      font-weight: 700;
+      color: #800000;
+      margin-bottom: 6px;
     }
-    .card {
+    .divider {
       border-bottom: 1px solid #ddd;
-      padding-bottom: 8px;
-      margin-bottom: 8px;
+      margin: 8px 0;
     }
-    .modal, .overlay {
-      display: none;
+    .loader {
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #FF9933;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      animation: spin 1s linear infinite;
+      margin: 10px auto;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg);}
+      100% { transform: rotate(360deg);}
+    }
+    .feedback {
+      margin-top: 10px;
+      text-align: center;
+    }
+    .feedback button {
+      font-size: 1.3rem;
+      margin: 0 10px;
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+    .feedback button:hover {
+      color: #FF9933;
+    }
+    /* Modal */
+    #modal {
       position: fixed;
       top: 0; left: 0;
       width: 100%; height: 100%;
-      background: rgba(0, 0, 0, 0.5);
+      background-color: rgba(0,0,0,0.4);
+      display: none;
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
     }
     .modal-content {
-      background: #fff;
+      background: white;
       padding: 20px;
-      margin: 10% auto;
+      max-width: 420px;
       width: 90%;
-      max-width: 400px;
-      border-radius: 8px;
+      border-radius: 12px;
+      position: relative;
+      max-height: 80vh;
+      overflow-y: auto;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.25);
     }
-    .feedback {
-      text-align: center;
-      margin-top: 10px;
-    }
-    .feedback button {
-      font-size: 1.5rem;
-      margin: 0 10px;
-    }
-    .loader {
-      display: none;
-      text-align: center;
-      margin-top: 10px;
-      font-style: italic;
+    .close-btn {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
       color: #555;
+      user-select: none;
+    }
+    .close-btn:hover {
+      color: #000;
     }
   </style>
 </head>
 <body>
-  <div class="chat-container">
-    <div class="header">callMithra</div>
-    <div class="slogan">Together For A Better Tomorrow</div>
 
-    <select id="place">
-      <option value="">-- Select Place --</option>
-      <option>Alampallam</option>
-      <option>Kollengode</option>
-      <option>Mathur</option>
-    </select>
+<div class="chat-container">
+  <div class="header">callMithra</div>
+  <div class="slogan">Together For A Better Tomorrow</div>
 
-    <select id="category">
-      <option value="">-- Select Category --</option>
-      <option>Caterers</option>
-      <option>Temple Priests</option>
-      <option>Business</option>
-      <option>Advocates</option>
-      <option>Other Services</option>
-    </select>
+  <label for="placeSelect">Select Place:</label>
+  <select id="placeSelect">
+    <option value="">-- Select Place --</option>
+    <option>Alampallam</option>
+    <option>Kollengode</option>
+    <option>Mathur</option>
+  </select>
 
-    <select id="faq">
-      <option value="">-- Select FAQ --</option>
-      <option>Who is Mithra?</option>
-      <option>Can we use Call Mithra App free?</option>
-      <option>Are the phone numbers updated often?</option>
-      <option>Contact Mithra</option>
-    </select>
+  <label for="categorySelect">Select Category:</label>
+  <select id="categorySelect">
+    <option value="">-- Select Category --</option>
+    <option>Caterers</option>
+    <option>Vaideekhal</option>
+    <option>Temple Priests</option>
+    <option>Business</option>
+    <option>Advocates</option>
+    <option>Other Services</option>
+  </select>
 
-    <div class="chatbox" id="chatbox"></div>
+  <label for="faqSelect">Select FAQ:</label>
+  <select id="faqSelect">
+    <option value="">-- Select FAQ --</option>
+    <option>Who is Mithra?</option>
+    <option>Can we use Call Mithra App free?</option>
+    <option>Are the phone numbers updated often?</option>
+    <option>Contact Mithra</option>
+  </select>
 
+  <div id="chatbox"></div>
+
+  <button id="eventsBtn">Events</button>
+  <button id="panchangBtn">Panchang</button>
+</div>
+
+<div id="modal">
+  <div class="modal-content">
+    <span id="closeModal" class="close-btn">&times;</span>
+    <div id="modalBody">Loading...</div>
     <div class="feedback">
-      <span>Was this helpful?</span>
-      <button onclick="logFeedback('up')">👍</button>
-      <button onclick="logFeedback('down')">👎</button>
+      <button onclick="alert('👍 Thank you for your feedback!')">👍</button>
+      <button onclick="alert('👎 Thank you for your feedback!')">👎</button>
     </div>
-
-    <button onclick="showModal('events')">Events <span style="color:red; font-size:0.9em;">New!</span></button>
-    <button onclick="showModal('panchang')">Panchang</button>
-
-    <div class="loader" id="loader">Loading...</div>
   </div>
+</div>
 
-  <!-- Modals -->
-  <div class="overlay" id="overlay" onclick="hideModal()"></div>
-  <div class="modal" id="eventsModal">
-    <div class="modal-content" id="eventsContent"></div>
-  </div>
-  <div class="modal" id="panchangModal">
-    <div class="modal-content" id="panchangContent"></div>
-  </div>
+<script>
+  const contactsUrl = 'https://script.google.com/macros/s/AKfycbyahR2hdj4aHZIM2ttITAhslZwNVpH11nGGmsnbrT082pV-NKESpy29F2rimnPKVsKNpw/exec';
+  const faqUrl = 'https://script.google.com/macros/s/AKfycbxqvwmPTZT7RBm3PwxhuAYUYgu-7RnGhmWO7zrO3qUVXYg1nXl3Wewv9HE3n8fHQKxU/exec';
+  const eventsUrl = 'https://script.google.com/macros/s/AKfycbx-38nfgX6yTwTvXrgnE77sDw99mETKyxyGzH28CAhuLmqtO8fsTMQrEyuqZHlljrfVBQ/exec';
+  const panchangUrl = 'https://script.google.com/macros/s/AKfycby5p66Ixg4CbGkr6Vh6kBn4A9vjfS8GdflkhddY114h-SKVNPE_Xx0140BuoQJ7UWce/exec';
+  const usageUrl = 'https://script.google.com/macros/s/AKfycbwBJI8rqGMfLHXQMwwIF8BcKvR-uH9FHdcnTO5fN6TlCxIMQY7gR_R_iF-l8tLdLwc-jg/exec';
 
-  <script>
-    const contactsUrl = 'https://script.google.com/macros/s/AKfycbyahR2hdj4aHZIM2ttITAhslZwNVpH11nGGmsnbrT082pV-NKESpy29F2rimnPKVsKNpw/exec';
-    const faqUrl = 'https://script.google.com/macros/s/AKfycbxqvwmPTZT7RBm3PwxhuAYUYgu-7RnGhmWO7zrO3qUVXYg1nXl3Wewv9HE3n8fHQKxU/exec';
-    const eventsUrl = 'https://script.google.com/macros/s/AKfycbx-38nfgX6yTwTvXrgnE77sDw99mETKyxyGzH28CAhuLmqtO8fsTMQrEyuqZHlljrfVBQ/exec';
-    const panchangUrl = 'https://script.google.com/macros/s/AKfycby5p66Ixg4CbGkr6Vh6kBn4A9vjfS8GdflkhddY114h-SKVNPE_Xx0140BuoQJ7UWce/exec';
-    const usageLogUrl = 'https://script.google.com/macros/s/AKfycbwBJI8rqGMfLHXQMwwIF8BcKvR-uH9FHdcnTO5fN6TlCxIMQY7gR_R_iF-l8tLdLwc-jg/exec';
+  const placeSelect = document.getElementById('placeSelect');
+  const categorySelect = document.getElementById('categorySelect');
+  const faqSelect = document.getElementById('faqSelect');
+  const chatbox = document.getElementById('chatbox');
+  const modal = document.getElementById('modal');
+  const modalBody = document.getElementById('modalBody');
+  const closeModal = document.getElementById('closeModal');
 
-    const placeSelect = document.getElementById('place');
-    const categorySelect = document.getElementById('category');
-    const faqSelect = document.getElementById('faq');
-    const chatbox = document.getElementById('chatbox');
-    const loader = document.getElementById('loader');
+  function appendCard(text, isError = false) {
+    const div = document.createElement('div');
+    div.className = isError ? 'error-card' : 'message-card';
+    div.innerText = text;
+    const fb = document.createElement('div');
+    fb.className = 'feedback';
+    fb.innerHTML = `
+      <button onclick="alert('👍 Thank you for your feedback!')">👍</button>
+      <button onclick="alert('👎 Thank you for your feedback!')">👎</button>
+    `;
+    div.appendChild(fb);
+    chatbox.appendChild(div);
+    chatbox.scrollTop = chatbox.scrollHeight;
+  }
 
-    async function fetchData(url) {
-      loader.style.display = 'block';
-      const response = await fetch(url);
-      loader.style.display = 'none';
-      return response.json();
+  function appendContactCard(name, phone1, phone2) {
+    const card = document.createElement('div');
+    card.className = 'contact-card';
+    card.innerHTML = `<div class="contact-header">${name}</div>
+      <div>Phone 1: ${phone1}</div>
+      <div>Phone 2: ${phone2 || '-'}</div>`;
+    chatbox.appendChild(card);
+    const divider = document.createElement('div');
+    divider.className = 'divider';
+    chatbox.appendChild(divider);
+    chatbox.scrollTop = chatbox.scrollHeight;
+  }
+
+  async function fetchContacts() {
+    const place = placeSelect.value;
+    const category = categorySelect.value;
+    if (!place || !category) return;
+    chatbox.innerHTML = '<div class="loader"></div>';
+    const response = await fetch(`${contactsUrl}?place=${place}&category=${category}`);
+    const data = await response.json();
+    chatbox.innerHTML = '';
+    if (data.reply && !data.reply.toLowerCase().includes('no contacts')) {
+      appendCard(`${place} ${category}`);
+      const lines = data.reply.split('\n');
+      lines.forEach(line => {
+        const match = line.match(/Name:\s*(.+?),\s*Phone1:\s*([^,]+)(?:,\s*Phone2:\s*(.*))?/i);
+        if (match) appendContactCard(match[1], match[2], match[3] || '');
+        else appendCard(line);
+      });
+    } else {
+      appendCard(data.reply || "No contacts found", true);
     }
+    fetch(usageUrl + `?type=contacts&detail=${place}-${category}`);
+  }
 
-    function showMessage(text, sender = 'bot') {
-      const div = document.createElement('div');
-      div.className = `message ${sender}`;
-      div.innerHTML = text;
-      chatbox.appendChild(div);
-      chatbox.scrollTop = chatbox.scrollHeight;
+  async function fetchFaq() {
+    const faq = faqSelect.value;
+    if (!faq) return;
+    chatbox.innerHTML = '<div class="loader"></div>';
+    const response = await fetch(`${faqUrl}?faq=${faq}`);
+    const data = await response.json();
+    chatbox.innerHTML = '';
+    if (data.reply && !data.reply.toLowerCase().includes('could not find')) {
+      appendCard(data.reply);
+    } else {
+      appendCard(data.reply || "Sorry, no answer found.", true);
     }
+    fetch(usageUrl + `?type=faq&detail=${faq}`);
+  }
 
-    async function fetchContacts() {
-      const place = placeSelect.value;
-      const category = categorySelect.value;
-      if (!place || !category) return;
+  function showModal(content) {
+    modalBody.innerHTML = content;
+    modal.style.display = 'flex';
+  }
 
-      chatbox.innerHTML = '';
-      try {
-        const data = await fetchData(`${contactsUrl}?place=${place}&category=${category}`);
-        const reply = data.reply || 'No data';
-        const entries = reply.split('\n');
-        showMessage(`<strong>${place} ${category}</strong>`, 'user');
-        entries.forEach(line => {
-          if (line.trim()) showMessage(`<div class='card'>${line}</div>`, 'bot');
-        });
-        logUsage('contact', `${place}-${category}`);
-      } catch {
-        showMessage('Server error. Please try again.', 'error');
-      }
-    }
+  async function showEvents() {
+    showModal('<div class="loader"></div>');
+    const res = await fetch(eventsUrl);
+    const data = await res.json();
+    modalBody.innerHTML = `<h3>Events</h3><pre>${data.reply || "No events found"}</pre>`;
+    fetch(usageUrl + `?type=events`);
+  }
 
-    async function fetchFaq() {
-      const question = faqSelect.value;
-      if (!question) return;
-      chatbox.innerHTML = '';
-      showMessage(`You asked: ${question}`, 'user');
-      try {
-        const data = await fetchData(`${faqUrl}?faq=${encodeURIComponent(question)}`);
-        showMessage(data.reply, 'bot');
-        logUsage('faq', question);
-      } catch {
-        showMessage('Server error. Please try again.', 'error');
-      }
-    }
+  async function showPanchang() {
+    showModal('<div class="loader"></div>');
+    const res = await fetch(panchangUrl);
+    const data = await res.json();
+    modalBody.innerHTML = `<h3>Panchang</h3><pre>${data.reply || "No panchang data found"}</pre>`;
+    fetch(usageUrl + `?type=panchang`);
+  }
 
-    async function showModal(type) {
-      document.getElementById('overlay').style.display = 'block';
-      const modal = document.getElementById(type + 'Modal');
-      modal.style.display = 'block';
-      const url = type === 'events' ? eventsUrl : panchangUrl;
-      const content = await fetchData(url);
-      document.getElementById(type + 'Content').innerText = content.reply || 'No data found.';
-      logUsage(type, 'shown');
-    }
+  placeSelect.onchange = () => {
+    faqSelect.value = '';
+    fetchContacts();
+  };
+  categorySelect.onchange = () => {
+    faqSelect.value = '';
+    fetchContacts();
+  };
+  faqSelect.onchange = () => {
+    placeSelect.value = '';
+    categorySelect.value = '';
+    fetchFaq();
+  };
 
-    function hideModal() {
-      document.querySelectorAll('.modal, .overlay').forEach(el => el.style.display = 'none');
-    }
+  document.getElementById('eventsBtn').onclick = showEvents;
+  document.getElementById('panchangBtn').onclick = showPanchang;
+  closeModal.onclick = () => modal.style.display = 'none';
+  window.onclick = (e) => { if (e.target === modal) modal.style.display = 'none'; };
 
-    async function logFeedback(type) {
-      await fetch(usageLogUrl + `?feedback=${type}`);
-    }
+  window.onload = () => {
+    appendCard("Hi, I am Mithra! Please select a Place and Category to get contacts or select a FAQ question.");
+    showEvents(); // First visit popup
+  };
+</script>
 
-    async function logUsage(type, query) {
-      await fetch(usageLogUrl + `?type=${type}&query=${encodeURIComponent(query)}`);
-    }
-
-    placeSelect.onchange = categorySelect.onchange = fetchContacts;
-    faqSelect.onchange = () => {
-      placeSelect.value = categorySelect.value = '';
-      fetchFaq();
-    };
-
-    window.onload = () => {
-      showModal('events');
-    };
-  </script>
 </body>
 </html>
