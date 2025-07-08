@@ -1,213 +1,248 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>callMithra Chatbot</title>
-<style>
-  body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: #f5f5f5;
-    margin: 0; padding: 20px;
-    display: flex; justify-content: center;
-  }
-  .chat-container {
-    background: white;
-    width: 100%;
-    max-width: 480px;
-    border-radius: 12px;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-    display: flex;
-    flex-direction: column;
-    padding: 20px;
-  }
-  .header {
-    background: white;
-    color: #FF9933; /* Dark saffron */
-    font-size: 1.8rem;
-    font-weight: 700;
-    text-align: center;
-    margin-bottom: 20px;
-  }
-  label {
-    font-weight: 600;
-    margin-top: 10px;
-    display: block;
-    color: #333;
-  }
-  select {
-    width: 100%;
-    padding: 10px;
-    margin-top: 6px;
-    border-radius: 6px;
-    border: 1.5px solid #ccc;
-    font-size: 1rem;
-  }
-  #chatbox {
-    margin-top: 20px;
-    background: #fafafa;
-    border-radius: 8px;
-    padding: 15px;
-    height: 280px;
-    overflow-y: auto;
-    border: 1px solid #ddd;
-    white-space: pre-wrap;
-  }
-  .message.bot {
-    color: #111; /* darkest black for answers */
-    margin-bottom: 12px;
-  }
-  .message.user {
-    color: #007bff;
-    font-weight: 600;
-    margin-bottom: 12px;
-    text-align: right;
-  }
-  .typing {
-    font-style: italic;
-    color: gray;
-    margin-top: 10px;
-  }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>callMithra</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f4f4f4;
+    }
+    .chat-container {
+      max-width: 480px;
+      margin: 0 auto;
+      background: #fff;
+      padding: 20px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    .header {
+      text-align: center;
+      font-size: 1.8em;
+      font-weight: bold;
+      color: #ff9933;
+    }
+    .slogan {
+      text-align: center;
+      font-size: 1em;
+      color: #555;
+      margin-bottom: 20px;
+    }
+    select, button {
+      width: 100%;
+      margin-top: 10px;
+      padding: 10px;
+      font-size: 1em;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    .chatbox {
+      margin-top: 20px;
+      min-height: 180px;
+      background: #f9f9f9;
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      white-space: pre-wrap;
+    }
+    .message {
+      margin-bottom: 12px;
+    }
+    .bot {
+      color: maroon;
+    }
+    .user {
+      color: #007bff;
+      text-align: right;
+      font-weight: bold;
+    }
+    .error {
+      color: red;
+    }
+    .card {
+      border-bottom: 1px solid #ddd;
+      padding-bottom: 8px;
+      margin-bottom: 8px;
+    }
+    .modal, .overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+    }
+    .modal-content {
+      background: #fff;
+      padding: 20px;
+      margin: 10% auto;
+      width: 90%;
+      max-width: 400px;
+      border-radius: 8px;
+    }
+    .feedback {
+      text-align: center;
+      margin-top: 10px;
+    }
+    .feedback button {
+      font-size: 1.5rem;
+      margin: 0 10px;
+    }
+    .loader {
+      display: none;
+      text-align: center;
+      margin-top: 10px;
+      font-style: italic;
+      color: #555;
+    }
+  </style>
 </head>
 <body>
+  <div class="chat-container">
+    <div class="header">callMithra</div>
+    <div class="slogan">Together For A Better Tomorrow</div>
 
-<div class="chat-container">
-  <div class="header">callMithra</div>
+    <select id="place">
+      <option value="">-- Select Place --</option>
+      <option>Alampallam</option>
+      <option>Kollengode</option>
+      <option>Mathur</option>
+    </select>
 
-  <label for="placeSelect">Select Place:</label>
-  <select id="placeSelect">
-    <option value="">-- Select Place --</option>
-    <option>Alampallam</option>
-    <option>Kollengode</option>
-    <option>Mathur</option>
-  </select>
+    <select id="category">
+      <option value="">-- Select Category --</option>
+      <option>Caterers</option>
+      <option>Temple Priests</option>
+      <option>Business</option>
+      <option>Advocates</option>
+      <option>Other Services</option>
+    </select>
 
-  <label for="categorySelect">Select Category:</label>
-  <select id="categorySelect">
-    <option value="">-- Select Category --</option>
-    <option>Caterers</option>
-    <option>Vaideekhal</option>
-    <option>Temple Priests</option>
-    <option>Business</option>
-    <option>Advocates</option>
-    <option>Other Services</option>
-  </select>
+    <select id="faq">
+      <option value="">-- Select FAQ --</option>
+      <option>Who is Mithra?</option>
+      <option>Can we use Call Mithra App free?</option>
+      <option>Are the phone numbers updated often?</option>
+      <option>Contact Mithra</option>
+    </select>
 
-  <label for="faqSelect">Select FAQ:</label>
-  <select id="faqSelect">
-    <option value="">-- Select FAQ --</option>
-    <option>Who is Mithra?</option>
-    <option>Can we use Call Mithra App free?</option>
-    <option>Are the phone numbers updated often?</option>
-    <option>Contact Mithra</option>
-  </select>
+    <div class="chatbox" id="chatbox"></div>
 
-  <div id="chatbox"></div>
-</div>
+    <div class="feedback">
+      <span>Was this helpful?</span>
+      <button onclick="logFeedback('up')">👍</button>
+      <button onclick="logFeedback('down')">👎</button>
+    </div>
 
-<script>
-  const placeSelect = document.getElementById('placeSelect');
-  const categorySelect = document.getElementById('categorySelect');
-  const faqSelect = document.getElementById('faqSelect');
-  const chatbox = document.getElementById('chatbox');
+    <button onclick="showModal('events')">Events <span style="color:red; font-size:0.9em;">New!</span></button>
+    <button onclick="showModal('panchang')">Panchang</button>
 
-  const contactsUrl = 'https://script.google.com/macros/s/AKfycby-Xz4E9G0Zy8yIj_iQH6eWiGw3FlJk972yU1ENxAqMI7TYxPiqEjwBzm0XqGfkMkhWSA/exec';
-  const faqUrl = 'https://script.google.com/macros/s/AKfycby3S6GiAwd-R7lhDmlVIv5Liwm5l3hidKoXDkpa7HVjaiqXb4ERFn2ax-xGwguG24dK/exec';
+    <div class="loader" id="loader">Loading...</div>
+  </div>
 
-  function appendMessage(text, sender) {
-    const msg = document.createElement('div');
-    msg.classList.add('message', sender);
-    msg.textContent = text;
-    chatbox.appendChild(msg);
-    chatbox.scrollTop = chatbox.scrollHeight;
-  }
+  <!-- Modals -->
+  <div class="overlay" id="overlay" onclick="hideModal()"></div>
+  <div class="modal" id="eventsModal">
+    <div class="modal-content" id="eventsContent"></div>
+  </div>
+  <div class="modal" id="panchangModal">
+    <div class="modal-content" id="panchangContent"></div>
+  </div>
 
-  function clearChat() {
-    chatbox.innerHTML = '';
-  }
+  <script>
+    const contactsUrl = 'https://script.google.com/macros/s/AKfycbyahR2hdj4aHZIM2ttITAhslZwNVpH11nGGmsnbrT082pV-NKESpy29F2rimnPKVsKNpw/exec';
+    const faqUrl = 'https://script.google.com/macros/s/AKfycbxqvwmPTZT7RBm3PwxhuAYUYgu-7RnGhmWO7zrO3qUVXYg1nXl3Wewv9HE3n8fHQKxU/exec';
+    const eventsUrl = 'https://script.google.com/macros/s/AKfycbx-38nfgX6yTwTvXrgnE77sDw99mETKyxyGzH28CAhuLmqtO8fsTMQrEyuqZHlljrfVBQ/exec';
+    const panchangUrl = 'https://script.google.com/macros/s/AKfycby5p66Ixg4CbGkr6Vh6kBn4A9vjfS8GdflkhddY114h-SKVNPE_Xx0140BuoQJ7UWce/exec';
+    const usageLogUrl = 'https://script.google.com/macros/s/AKfycbwBJI8rqGMfLHXQMwwIF8BcKvR-uH9FHdcnTO5fN6TlCxIMQY7gR_R_iF-l8tLdLwc-jg/exec';
 
-  function showTyping() {
-    const typing = document.createElement('div');
-    typing.classList.add('typing');
-    typing.id = 'typingIndicator';
-    typing.textContent = 'Mithra is typing...';
-    chatbox.appendChild(typing);
-    chatbox.scrollTop = chatbox.scrollHeight;
-  }
+    const placeSelect = document.getElementById('place');
+    const categorySelect = document.getElementById('category');
+    const faqSelect = document.getElementById('faq');
+    const chatbox = document.getElementById('chatbox');
+    const loader = document.getElementById('loader');
 
-  function removeTyping() {
-    const typing = document.getElementById('typingIndicator');
-    if (typing) typing.remove();
-  }
-
-  // Fetch contacts when place and category both selected
-  async function fetchContacts() {
-    const place = placeSelect.value;
-    const category = categorySelect.value;
-
-    if (!place || !category) return;
-
-    clearChat();
-    appendMessage(`You selected place: ${place}`, 'user');
-    appendMessage(`You selected category: ${category}`, 'user');
-    appendMessage(`Fetching contacts for ${category} in ${place}...`, 'user');
-    showTyping();
-
-    try {
-      const response = await fetch(`${contactsUrl}?place=${encodeURIComponent(place)}&category=${encodeURIComponent(category)}`);
-      const data = await response.json();
-      removeTyping();
-      appendMessage(data.reply, 'bot');
-    } catch {
-      removeTyping();
-      appendMessage("Sorry, I couldn't reach the server. Please try again.", 'bot');
+    async function fetchData(url) {
+      loader.style.display = 'block';
+      const response = await fetch(url);
+      loader.style.display = 'none';
+      return response.json();
     }
-  }
 
-  // Fetch FAQ answer on selection
-  async function fetchFaq() {
-    const faq = faqSelect.value;
-    if (!faq) return;
-
-    clearChat();
-    appendMessage(`You asked: ${faq}`, 'user');
-    showTyping();
-
-    try {
-      const response = await fetch(`${faqUrl}?faq=${encodeURIComponent(faq)}`);
-      const data = await response.json();
-      removeTyping();
-      appendMessage(data.reply, 'bot');
-    } catch {
-      removeTyping();
-      appendMessage("Sorry, I couldn't reach the server. Please try again.", 'bot');
+    function showMessage(text, sender = 'bot') {
+      const div = document.createElement('div');
+      div.className = `message ${sender}`;
+      div.innerHTML = text;
+      chatbox.appendChild(div);
+      chatbox.scrollTop = chatbox.scrollHeight;
     }
-  }
 
-  placeSelect.addEventListener('change', () => {
-    // Reset FAQ when changing place/category
-    faqSelect.value = "";
-    fetchContacts();
-  });
+    async function fetchContacts() {
+      const place = placeSelect.value;
+      const category = categorySelect.value;
+      if (!place || !category) return;
 
-  categorySelect.addEventListener('change', () => {
-    faqSelect.value = "";
-    fetchContacts();
-  });
+      chatbox.innerHTML = '';
+      try {
+        const data = await fetchData(`${contactsUrl}?place=${place}&category=${category}`);
+        const reply = data.reply || 'No data';
+        const entries = reply.split('\n');
+        showMessage(`<strong>${place} ${category}</strong>`, 'user');
+        entries.forEach(line => {
+          if (line.trim()) showMessage(`<div class='card'>${line}</div>`, 'bot');
+        });
+        logUsage('contact', `${place}-${category}`);
+      } catch {
+        showMessage('Server error. Please try again.', 'error');
+      }
+    }
 
-  faqSelect.addEventListener('change', () => {
-    // Clear place and category when FAQ selected
-    placeSelect.value = "";
-    categorySelect.value = "";
-    fetchFaq();
-  });
+    async function fetchFaq() {
+      const question = faqSelect.value;
+      if (!question) return;
+      chatbox.innerHTML = '';
+      showMessage(`You asked: ${question}`, 'user');
+      try {
+        const data = await fetchData(`${faqUrl}?faq=${encodeURIComponent(question)}`);
+        showMessage(data.reply, 'bot');
+        logUsage('faq', question);
+      } catch {
+        showMessage('Server error. Please try again.', 'error');
+      }
+    }
 
-  // Show welcome message
-  window.onload = () => {
-    appendMessage('Hi, I am Mithra! Please select a Place and Category to get contacts or select a FAQ question.', 'bot');
-  };
-</script>
+    async function showModal(type) {
+      document.getElementById('overlay').style.display = 'block';
+      const modal = document.getElementById(type + 'Modal');
+      modal.style.display = 'block';
+      const url = type === 'events' ? eventsUrl : panchangUrl;
+      const content = await fetchData(url);
+      document.getElementById(type + 'Content').innerText = content.reply || 'No data found.';
+      logUsage(type, 'shown');
+    }
 
+    function hideModal() {
+      document.querySelectorAll('.modal, .overlay').forEach(el => el.style.display = 'none');
+    }
+
+    async function logFeedback(type) {
+      await fetch(usageLogUrl + `?feedback=${type}`);
+    }
+
+    async function logUsage(type, query) {
+      await fetch(usageLogUrl + `?type=${type}&query=${encodeURIComponent(query)}`);
+    }
+
+    placeSelect.onchange = categorySelect.onchange = fetchContacts;
+    faqSelect.onchange = () => {
+      placeSelect.value = categorySelect.value = '';
+      fetchFaq();
+    };
+
+    window.onload = () => {
+      showModal('events');
+    };
+  </script>
 </body>
 </html>
