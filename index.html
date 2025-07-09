@@ -56,17 +56,7 @@
       font-weight: bold;
       cursor: pointer;
     }
-    .badge {
-  position: absolute;
-  top: -6px;
-  right: -10px;
-  background-color: red;
-  color: white;
-  font-size: 0.65rem;
-  padding: 2px 5px;
-  border-radius: 10px;
-}
-
+    
     #chatbox {
       background: #f9f9f9;
       border: 1px solid #ccc;
@@ -162,11 +152,6 @@
       <option>Contact Mithra</option>
     </select>
     
-<button id="eventsBtn" style="position: relative; margin-top: 10px;">
-  View Events
-  <span class="badge">New</span>
-</button>
-
     <div class="button-row">
       <button onclick="openModal('events')">Events</button>
       <button onclick="openModal('panchang')">Panchang</button>
@@ -306,16 +291,8 @@
 
     window.onload = () => {
   appendMessage('Hi, I am Mithra! Please select a Place and Category to get contacts or select a FAQ question.');
-
-  // 👉 Hides the red "New" badge after clicking the Events button
-  const eventsBtn = document.getElementById("eventsBtn");
-  if (eventsBtn) {
-    eventsBtn.addEventListener("click", () => {
-      const badge = document.querySelector(".badge");
-      if (badge) badge.style.display = "none";
-    });
-  }
 };
+
 
   </script>
 </body>
