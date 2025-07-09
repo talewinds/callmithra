@@ -3,122 +3,63 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Call Mithra Chatbot</title>
+  <title>Call Mithra</title>
   <style>
     body {
-      font-family: 'Segoe UI', sans-serif;
-      background: #f5f5f5;
-      margin: 0;
-      padding: 20px;
-      display: flex;
-      justify-content: center;
+      font-family: 'Segoe UI', Tahoma, sans-serif;
+      background: #f8f8f8;
+      margin: 0; padding: 0;
     }
     .chat-container {
-      background: white;
-      width: 100%;
       max-width: 480px;
-      border-radius: 12px;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-      display: flex;
-      flex-direction: column;
+      margin: auto;
       padding: 20px;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
     .header {
-      text-align: center;
       color: maroon;
       font-size: 1.8rem;
       font-weight: bold;
+      text-align: center;
+      margin-bottom: 4px;
     }
     .slogan {
-      text-align: center;
-      font-size: 0.95rem;
       color: black;
-      margin-bottom: 15px;
+      font-size: 1rem;
+      text-align: center;
+      margin-bottom: 20px;
     }
-    label {
-      font-weight: bold;
-      margin-top: 10px;
-      display: block;
-    }
-    select {
+    select, button {
       width: 100%;
       padding: 10px;
-      margin-top: 6px;
+      margin-top: 10px;
       border-radius: 6px;
-      border: 1.5px solid #ccc;
+      border: 1px solid #ccc;
       font-size: 1rem;
     }
     #chatbox {
       margin-top: 20px;
-      background: #fafafa;
-      border-radius: 8px;
-      padding: 15px;
-      min-height: 280px;
-      border: 1px solid #ddd;
-      overflow-y: auto;
     }
     .contact-box {
-      background-color: #fff5f5;
       border: 1px solid maroon;
       border-radius: 10px;
-      padding: 10px 14px;
+      padding: 10px;
       margin-bottom: 12px;
-      color: maroon;
-      font-size: 1rem;
+      background: #fff5f5;
+      font-size: 1.1rem;
       line-height: 1.5;
-    }
-    .bot-message {
-      color: maroon;
-      margin-bottom: 12px;
     }
     .error {
       color: red;
       font-weight: bold;
-    }
-    .typing {
-      font-style: italic;
-      color: gray;
       margin-top: 10px;
     }
-    .button-bar {
-      margin-top: 15px;
-      display: flex;
-      justify-content: space-between;
-      gap: 10px;
-    }
-    button {
-      flex: 1;
-      padding: 10px;
-      border: none;
-      border-radius: 8px;
-      font-weight: bold;
-      background: #ffcccb;
-      color: maroon;
-      cursor: pointer;
-    }
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 99;
-      left: 0; top: 0;
-      width: 100%; height: 100%;
-      background-color: rgba(0,0,0,0.4);
-    }
-    .modal-content {
-      background-color: #fff;
-      margin: 15% auto;
-      padding: 20px;
-      border-radius: 10px;
-      width: 90%;
-      max-width: 400px;
-      position: relative;
-    }
-    .close {
-      position: absolute;
-      right: 10px; top: 5px;
-      font-size: 20px;
-      font-weight: bold;
-      cursor: pointer;
+    .loader {
+      text-align: center;
+      font-style: italic;
+      color: gray;
     }
   </style>
 </head>
@@ -128,7 +69,6 @@
   <div class="header">Call Mithra</div>
   <div class="slogan">Together For A Better Tomorrow</div>
 
-  <label for="placeSelect">Select Place:</label>
   <select id="placeSelect">
     <option value="">-- Select Place --</option>
     <option>Alampallam</option>
@@ -136,7 +76,6 @@
     <option>Mathur</option>
   </select>
 
-  <label for="categorySelect">Select Category:</label>
   <select id="categorySelect">
     <option value="">-- Select Category --</option>
     <option>Caterers</option>
@@ -147,7 +86,6 @@
     <option>Other Services</option>
   </select>
 
-  <label for="faqSelect">Select FAQ:</label>
   <select id="faqSelect">
     <option value="">-- Select FAQ --</option>
     <option>Who is Mithra?</option>
@@ -156,141 +94,156 @@
     <option>Contact Mithra</option>
   </select>
 
+  <button onclick="showModal('events')">Events</button>
+  <button onclick="showModal('panchang')">Panchang</button>
+
   <div id="chatbox"></div>
-
-  <div class="button-bar">
-    <button onclick="showModal('eventsModal')">Events</button>
-    <button onclick="showModal('panchangModal')">Panchang</button>
-  </div>
 </div>
 
-<!-- Events Modal -->
-<div id="eventsModal" class="modal" onclick="closeOutside(event, 'eventsModal')">
-  <div class="modal-content">
-    <span class="close" onclick="hideModal('eventsModal')">&times;</span>
-    <div id="eventsContent">Loading events...</div>
-  </div>
-</div>
-
-<!-- Panchang Modal -->
-<div id="panchangModal" class="modal" onclick="closeOutside(event, 'panchangModal')">
-  <div class="modal-content">
-    <span class="close" onclick="hideModal('panchangModal')">&times;</span>
-    <div id="panchangContent">Loading panchang...</div>
+<!-- Modal -->
+<div id="modal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);">
+  <div style="background:white;max-width:400px;margin:80px auto;padding:20px;border-radius:10px;position:relative;">
+    <span onclick="closeModal()" style="position:absolute;top:8px;right:12px;cursor:pointer;font-weight:bold;">✖</span>
+    <div id="modalContent">Loading...</div>
   </div>
 </div>
 
 <script>
-const contactsUrl = "https://script.google.com/macros/s/AKfycbwr8qdc_9PVJbsPM-XbNNr4tg9Z70wHdDM0EBLKdDOUs7zDZoXDFZvi1_Oho1c8YXuV_g/exec";
-const faqUrl = "https://script.google.com/macros/s/AKfycbxqvwmPTZT7RBm3PwxhuAYUYgu-7RnGhmWO7zrO3qUVXYg1nXl3Wewv9HE3n8fHQKxU/exec";
-const eventsUrl = "https://script.google.com/macros/s/AKfycbyREuWL3hPqmJj9T_g-LjDwB34D9DSaPD2KzjFx8Zd_aSUPMEu_ysqKqraeT6USx3Pmww/exec";
-const panchangUrl = "https://script.google.com/macros/s/AKfycbzUdmenvxUvm64nc6HMiPimJIJCyYpPpiyLzl--veCZ7YGAaNjJzHtBpWV9Q4FKXu7r/exec";
-const usageLogUrl = "https://script.google.com/macros/s/AKfycbwBJI8rqGMfLHXQMwwIF8BcKvR-uH9FHdcnTO5fN6TlCxIMQY7gR_R_iF-l8tLdLwc-jg/exec";
+  const placeSelect = document.getElementById('placeSelect');
+  const categorySelect = document.getElementById('categorySelect');
+  const faqSelect = document.getElementById('faqSelect');
+  const chatbox = document.getElementById('chatbox');
 
-const chatbox = document.getElementById('chatbox');
-const placeSelect = document.getElementById('placeSelect');
-const categorySelect = document.getElementById('categorySelect');
-const faqSelect = document.getElementById('faqSelect');
+  const contactsUrl = 'https://script.google.com/macros/s/AKfycbzljP53EAr9tD7we62zp8qjigDcCFSb15YN9iTIYRqtTZTPYueDMGicPAf6uJJTPdAr5Q/exec'; // ← Replace with your final contact URL
+  const faqUrl = 'https://script.google.com/macros/s/AKfycbxqvwmPTZT7RBm3PwxhuAYUYgu-7RnGhmWO7zrO3qUVXYg1nXl3Wewv9HE3n8fHQKxU/exec';
+  const eventsUrl = 'https://script.google.com/macros/s/AKfycbyREuWL3hPqmJj9T_g-LjDwB34D9DSaPD2KzjFx8Zd_aSUPMEu_ysqKqraeT6USx3Pmww/exec';
+  const panchangUrl = 'https://script.google.com/macros/s/AKfycbzUdmenvxUvm64nc6HMiPimJIJCyYpPpiyLzl--veCZ7YGAaNjJzHtBpWV9Q4FKXu7r/exec';
+  const usageLogUrl = 'https://script.google.com/macros/s/AKfycbwBJI8rqGMfLHXQMwwIF8BcKvR-uH9FHdcnTO5fN6TlCxIMQY7gR_R_iF-l8tLdLwc-jg/exec';
 
-function showTyping() {
-  chatbox.innerHTML = '<div class="typing">Mithra is typing...</div>';
-}
-function clearChat() {
-  chatbox.innerHTML = '';
-}
-function appendCard(content) {
-  const div = document.createElement('div');
-  div.className = 'contact-box';
-  div.innerHTML = content;
-  chatbox.appendChild(div);
-}
-function appendError(message) {
-  const div = document.createElement('div');
-  div.className = 'error';
-  div.textContent = message;
-  chatbox.appendChild(div);
-}
+  function clearChat() {
+    chatbox.innerHTML = '';
+  }
 
-async function fetchContacts() {
-  const place = placeSelect.value;
-  const category = categorySelect.value;
-  if (!place || !category) return;
+  function appendContactCard(contact) {
+    const div = document.createElement('div');
+    div.className = 'contact-box';
+    div.innerHTML = `
+      ${contact.title}<br>
+      ${contact.name}<br>
+      ${contact.phone1}<br>
+      ${contact.phone2}
+    `;
+    chatbox.appendChild(div);
+  }
 
-  clearChat();
-  showTyping();
+  function appendError(message) {
+    const div = document.createElement('div');
+    div.className = 'error';
+    div.textContent = message;
+    chatbox.appendChild(div);
+  }
 
-  try {
-    const response = await fetch(`${contactsUrl}?place=${encodeURIComponent(place)}&category=${encodeURIComponent(category)}`);
-    const data = await response.json();
+  function showLoader() {
+    const div = document.createElement('div');
+    div.className = 'loader';
+    div.textContent = 'Mithra is fetching data...';
+    chatbox.appendChild(div);
+  }
+
+  function removeLoader() {
+    const loader = document.querySelector('.loader');
+    if (loader) loader.remove();
+  }
+
+  async function fetchContacts() {
+    const place = placeSelect.value;
+    const category = categorySelect.value;
+
+    if (!place || !category) return;
+
     clearChat();
+    showLoader();
 
-    if (data.reply && data.reply.length) {
-      data.reply.forEach(contact => {
-        const content = `${place} ${category}<br>${contact.name}<br>${contact.phone1}<br>${contact.phone2}`;
-        appendCard(content);
-      });
-    } else {
-      appendError("No contacts found.");
+    try {
+      const res = await fetch(`${contactsUrl}?place=${encodeURIComponent(place)}&category=${encodeURIComponent(category)}`);
+      const data = await res.json();
+      removeLoader();
+
+      if (data.contacts) {
+        data.contacts.forEach(appendContactCard);
+      } else {
+        appendError(data.reply || "No data found.");
+      }
+    } catch {
+      removeLoader();
+      appendError("Server error. Please try again.");
     }
-  } catch {
-    clearChat();
-    appendError("Server error. Try again.");
   }
-}
 
-async function fetchFaq() {
-  const faq = faqSelect.value;
-  if (!faq) return;
+  async function fetchFAQ() {
+    const faq = faqSelect.value;
+    if (!faq) return;
 
-  clearChat();
-  showTyping();
-  try {
-    const response = await fetch(`${faqUrl}?faq=${encodeURIComponent(faq)}`);
-    const data = await response.json();
     clearChat();
-    appendCard(data.reply);
-  } catch {
-    clearChat();
-    appendError("Could not fetch FAQ.");
+    showLoader();
+
+    try {
+      const res = await fetch(`${faqUrl}?faq=${encodeURIComponent(faq)}`);
+      const data = await res.json();
+      removeLoader();
+      appendContactCard({ title: "FAQ", name: data.reply, phone1: "", phone2: "" });
+    } catch {
+      removeLoader();
+      appendError("Server error. Please try again.");
+    }
   }
-}
 
-async function fetchEvents() {
-  const res = await fetch(eventsUrl);
-  const data = await res.json();
-  document.getElementById('eventsContent').innerText = data.reply || "No events found.";
-}
-async function fetchPanchang() {
-  const res = await fetch(panchangUrl);
-  const data = await res.json();
-  document.getElementById('panchangContent').innerText = data.reply || "No data found.";
-}
+  async function fetchModalData(url) {
+    const modal = document.getElementById('modal');
+    const content = document.getElementById('modalContent');
+    modal.style.display = 'block';
+    content.innerHTML = "Loading...";
 
-function showModal(id) {
-  document.getElementById(id).style.display = 'block';
-  if (id === 'eventsModal') fetchEvents();
-  if (id === 'panchangModal') fetchPanchang();
-}
-function hideModal(id) {
-  document.getElementById(id).style.display = 'none';
-}
-function closeOutside(e, id) {
-  if (e.target.id === id) hideModal(id);
-}
+    try {
+      const res = await fetch(url);
+      const data = await res.json();
+      content.innerHTML = `<pre>${data.reply || "No data found."}</pre>`;
+    } catch {
+      content.innerHTML = `<span class="error">Error loading data.</span>`;
+    }
+  }
 
-placeSelect.addEventListener('change', () => {
-  faqSelect.value = '';
-  fetchContacts();
-});
-categorySelect.addEventListener('change', () => {
-  faqSelect.value = '';
-  fetchContacts();
-});
-faqSelect.addEventListener('change', () => {
-  placeSelect.value = '';
-  categorySelect.value = '';
-  fetchFaq();
-});
+  function showModal(type) {
+    if (type === 'events') fetchModalData(eventsUrl);
+    if (type === 'panchang') fetchModalData(panchangUrl);
+  }
+
+  function closeModal() {
+    document.getElementById('modal').style.display = 'none';
+  }
+
+  window.onclick = function(e) {
+    if (e.target === document.getElementById('modal')) {
+      closeModal();
+    }
+  };
+
+  // Event listeners
+  placeSelect.addEventListener('change', () => {
+    faqSelect.value = "";
+    fetchContacts();
+  });
+
+  categorySelect.addEventListener('change', () => {
+    faqSelect.value = "";
+    fetchContacts();
+  });
+
+  faqSelect.addEventListener('change', () => {
+    placeSelect.value = "";
+    categorySelect.value = "";
+    fetchFAQ();
+  });
 </script>
 
 </body>
