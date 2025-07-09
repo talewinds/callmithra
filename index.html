@@ -42,6 +42,20 @@
       border-radius: 6px;
       font-size: 1rem;
     }
+    .button-row {
+      text-align: center;
+      margin: 10px 0;
+    }
+    button {
+      margin: 4px;
+      padding: 6px 10px;
+      border: none;
+      border-radius: 6px;
+      background-color: maroon;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
     #chatbox {
       background: #f9f9f9;
       border: 1px solid #ccc;
@@ -56,13 +70,13 @@
     }
     .contact-card {
       background: #fff0f0;
-      border-radius: 10px;
-      padding: 12px;
-      margin-bottom: 15px;
+      border-radius: 8px;
+      padding: 8px;
+      margin-bottom: 10px;
       border: 1px solid maroon;
       font-size: 1.05rem;
       color: maroon;
-      line-height: 1.6;
+      line-height: 1.5;
     }
     .error {
       color: red;
@@ -71,6 +85,35 @@
       font-style: italic;
       color: gray;
       margin: 10px 0;
+    }
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 9999;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.4);
+    }
+    .modal-content {
+      background-color: white;
+      margin: 15% auto;
+      padding: 20px;
+      border-radius: 10px;
+      width: 80%;
+      max-width: 400px;
+      color: maroon;
+      position: relative;
+    }
+    .close {
+      position: absolute;
+      top: 5px;
+      right: 10px;
+      font-size: 20px;
+      font-weight: bold;
+      color: red;
+      cursor: pointer;
     }
   </style>
 </head>
@@ -107,7 +150,20 @@
       <option>Contact Mithra</option>
     </select>
 
+    <div class="button-row">
+      <button onclick="openModal('events')">Events</button>
+      <button onclick="openModal('panchang')">Panchang</button>
+    </div>
+
     <div id="chatbox"></div>
+  </div>
+
+  <!-- Modal -->
+  <div id="modal" class="modal" onclick="closeModal(event)">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal(event)">&times;</span>
+      <div id="modalData">Loading...</div>
+    </div>
   </div>
 
   <script>
@@ -162,9 +218,7 @@
       const place = placeSelect.value;
       const category = categorySelect.value;
       if (!place || !category) return;
-
-      clearChat();
-      showTyping();
+      clearChat(); showTyping();
 
       try {
         const response = await fetch(`${contactsUrl}?place=${encodeURIComponent(place)}&category=${encodeURIComponent(category)}`);
@@ -176,7 +230,7 @@
         } else {
           appendMessage('No contacts found.', 'error');
         }
-      } catch (err) {
+      } catch {
         removeTyping();
         appendMessage('Server error. Please try again.', 'error');
       }
@@ -185,9 +239,7 @@
     async function fetchFaq() {
       const faq = faqSelect.value;
       if (!faq) return;
-
-      clearChat();
-      showTyping();
+      clearChat(); showTyping();
       try {
         const response = await fetch(`${faqUrl}?faq=${encodeURIComponent(faq)}`);
         const data = await response.json();
@@ -196,6 +248,28 @@
       } catch {
         removeTyping();
         appendMessage("Sorry, couldn't reach FAQ server.", 'error');
+      }
+    }
+
+    async function openModal(type) {
+      const modal = document.getElementById('modal');
+      const modalData = document.getElementById('modalData');
+      modal.style.display = 'block';
+      modalData.innerHTML = 'Loading...';
+      const url = type === 'events' ? eventsUrl : panchangUrl;
+
+      try {
+        const response = await fetch(url);
+        const data = await response.json();
+        modalData.innerHTML = (data.reply || 'No data found');
+      } catch {
+        modalData.innerHTML = 'Could not fetch data.';
+      }
+    }
+
+    function closeModal(event) {
+      if (event.target.classList.contains('modal') || event.target.classList.contains('close')) {
+        document.getElementById('modal').style.display = 'none';
       }
     }
 
