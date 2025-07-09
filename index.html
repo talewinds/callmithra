@@ -2,103 +2,92 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Call Mithra</title>
   <style>
     body {
-      font-family: 'Segoe UI', sans-serif;
-      background: #fdfdfd;
       margin: 0;
-      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: #f9f9f9;
+      display: flex;
+      justify-content: center;
+      padding: 20px;
     }
-    .chat-container {
+    .container {
+      width: 100%;
       max-width: 480px;
-      margin: auto;
-      padding: 16px;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      padding: 20px;
     }
     .header {
-      text-align: center;
-      margin-bottom: 4px;
-      font-size: 1.8em;
-      font-weight: bold;
       color: maroon;
+      font-size: 1.8rem;
+      font-weight: bold;
+      text-align: center;
     }
     .slogan {
       text-align: center;
+      font-size: 0.9rem;
       color: black;
-      font-size: 0.95em;
-      margin-bottom: 16px;
+      margin-bottom: 15px;
     }
     select, button {
       width: 100%;
       padding: 10px;
-      margin-top: 8px;
-      border-radius: 6px;
-      border: 1px solid #aaa;
+      margin-top: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
       font-size: 1rem;
     }
     #chatbox {
-      margin-top: 16px;
-    }
-    .card {
-      background: #fff;
-      border: 1px solid #ddd;
-      border-left: 5px solid maroon;
-      padding: 12px;
-      margin-bottom: 10px;
+      margin-top: 20px;
+      background: #f2f2f2;
+      padding: 15px;
       border-radius: 8px;
-      font-size: 1.1em;
+      min-height: 200px;
+      white-space: pre-wrap;
       color: maroon;
+    }
+    .contact-block {
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #ccc;
     }
     .error {
       color: red;
-      margin-top: 12px;
-    }
-    .modal-overlay {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0,0,0,0.5);
-      display: none;
-      justify-content: center;
-      align-items: center;
-      z-index: 999;
     }
     .modal {
-      background: #fff;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-content {
+      background: white;
       padding: 20px;
-      border-radius: 10px;
-      max-width: 90%;
-      max-height: 80%;
+      border-radius: 8px;
+      width: 90%;
+      max-width: 400px;
+      max-height: 80vh;
       overflow-y: auto;
       position: relative;
     }
-    .modal h3 {
-      margin-top: 0;
-      color: maroon;
-    }
     .close-btn {
       position: absolute;
-      top: 8px;
-      right: 12px;
-      background: none;
-      border: none;
-      font-size: 1.2em;
+      right: 10px;
+      top: 5px;
+      font-weight: bold;
+      font-size: 1.2rem;
       cursor: pointer;
-    }
-    .button-group {
-      display: flex;
-      justify-content: space-between;
-      margin-top: 16px;
-      gap: 10px;
-    }
-    .button-group button {
-      flex: 1;
     }
   </style>
 </head>
 <body>
-  <div class="chat-container">
+  <div class="container">
     <div class="header">Call Mithra</div>
     <div class="slogan">Together For A Better Tomorrow</div>
 
@@ -127,29 +116,32 @@
       <option>Contact Mithra</option>
     </select>
 
-    <div class="button-group">
-      <button onclick="fetchEvents()">Events</button>
-      <button onclick="fetchPanchang()">Panchang</button>
-    </div>
+    <button onclick="showEvents()">Events</button>
+    <button onclick="showPanchang()">Panchang</button>
 
     <div id="chatbox"></div>
   </div>
 
-  <!-- Modal Overlay -->
-  <div id="modalOverlay" class="modal-overlay" onclick="closeModal(event)">
-    <div id="modalContent" class="modal" onclick="event.stopPropagation()">
-      <button class="close-btn" onclick="closeModal()">×</button>
-      <h3 id="modalTitle"></h3>
-      <div id="modalBody"></div>
+  <div id="eventsModal" class="modal" onclick="closeModal(event, 'eventsModal')">
+    <div class="modal-content">
+      <span class="close-btn" onclick="hideModal('eventsModal')">&times;</span>
+      <div id="eventsContent">Loading events...</div>
+    </div>
+  </div>
+
+  <div id="panchangModal" class="modal" onclick="closeModal(event, 'panchangModal')">
+    <div class="modal-content">
+      <span class="close-btn" onclick="hideModal('panchangModal')">&times;</span>
+      <div id="panchangContent">Loading panchang...</div>
     </div>
   </div>
 
   <script>
-    const contactsUrl = 'https://script.google.com/macros/s/AKfycbwqG5pG0vXLype_CGgMlieyajEHNIrPHF7qdaxuvYzxe4nshQ8Eo-76H9LlfXbwl2FDMQ/exec';
+    const contactsUrl = 'https://script.google.com/macros/s/AKfycbye2VMi4qfeRPXvvf8QPBmyjMlOOCs_etpZ8wr5Xq9gdjaWLtqwmMa13d7l0HiLN-R-lQ/exec';
     const faqUrl = 'https://script.google.com/macros/s/AKfycbxqvwmPTZT7RBm3PwxhuAYUYgu-7RnGhmWO7zrO3qUVXYg1nXl3Wewv9HE3n8fHQKxU/exec';
     const eventsUrl = 'https://script.google.com/macros/s/AKfycbyREuWL3hPqmJj9T_g-LjDwB34D9DSaPD2KzjFx8Zd_aSUPMEu_ysqKqraeT6USx3Pmww/exec';
     const panchangUrl = 'https://script.google.com/macros/s/AKfycbzUdmenvxUvm64nc6HMiPimJIJCyYpPpiyLzl--veCZ7YGAaNjJzHtBpWV9Q4FKXu7r/exec';
-    const usageUrl = 'https://script.google.com/macros/s/AKfycbwBJI8rqGMfLHXQMwwIF8BcKvR-uH9FHdcnTO5fN6TlCxIMQY7gR_R_iF-l8tLdLwc-jg/exec';
+    const logUrl = 'https://script.google.com/macros/s/AKfycbwBJI8rqGMfLHXQMwwIF8BcKvR-uH9FHdcnTO5fN6TlCxIMQY7gR_R_iF-l8tLdLwc-jg/exec';
 
     const placeSelect = document.getElementById('placeSelect');
     const categorySelect = document.getElementById('categorySelect');
@@ -163,93 +155,73 @@
     async function fetchContacts() {
       const place = placeSelect.value;
       const category = categorySelect.value;
-      faqSelect.value = "";
+      faqSelect.value = '';
+      chatbox.innerHTML = '';
       if (!place || !category) return;
-      chatbox.innerHTML = "Loading...";
+
       try {
-        const res = await fetch(`${contactsUrl}?place=${encodeURIComponent(place)}&category=${encodeURIComponent(category)}`);
+        const res = await fetch(`${contactsUrl}?place=${place}&category=${category}`);
         const data = await res.json();
-        showUsage("contacts", `${place} - ${category}`);
-        displayCards(data.reply, place, category);
-      } catch {
-        chatbox.innerHTML = `<div class="error">Server unreachable. Try again.</div>`;
+        chatbox.innerHTML = '';
+        if (data.reply && data.reply.length > 0) {
+          data.reply.forEach(item => {
+            const div = document.createElement('div');
+            div.className = 'contact-block';
+            div.innerHTML = `<strong>${place} ${category}</strong><br>${item.name}<br>${item.phone1}<br>${item.phone2}`;
+            chatbox.appendChild(div);
+          });
+        } else {
+          chatbox.innerHTML = `<div class='error'>No contacts found.</div>`;
+        }
+      } catch (err) {
+        chatbox.innerHTML = `<div class='error'>Server error. Try again.</div>`;
       }
     }
 
     async function fetchFaq() {
-      const faq = faqSelect.value;
-      placeSelect.value = "";
-      categorySelect.value = "";
-      if (!faq) return;
-      chatbox.innerHTML = "Loading...";
+      const question = faqSelect.value;
+      placeSelect.value = '';
+      categorySelect.value = '';
+      chatbox.innerHTML = '';
+      if (!question) return;
+
       try {
-        const res = await fetch(`${faqUrl}?faq=${encodeURIComponent(faq)}`);
+        const res = await fetch(`${faqUrl}?faq=${question}`);
         const data = await res.json();
-        showUsage("faq", faq);
-        chatbox.innerHTML = `<div class="card">${data.reply}</div>`;
+        chatbox.innerHTML = data.reply ? data.reply : `<div class='error'>No answer found.</div>`;
       } catch {
-        chatbox.innerHTML = `<div class="error">Server unreachable. Try again.</div>`;
+        chatbox.innerHTML = `<div class='error'>Server error. Try again.</div>`;
       }
     }
 
-    function displayCards(response, place, category) {
-      if (!response || response === "No contacts found for the selected place and category.") {
-        chatbox.innerHTML = `<div class="error">No contacts found for ${place} - ${category}.</div>`;
-        return;
-      }
-      const lines = response.trim().split("\n");
-      chatbox.innerHTML = lines.map(line => `<div class="card">${place} ${category}<br>${line}</div>`).join("");
-    }
-
-    function closeModal() {
-      document.getElementById("modalOverlay").style.display = "none";
-    }
-
-    async function fetchEvents() {
+    async function showEvents() {
       try {
         const res = await fetch(eventsUrl);
         const data = await res.json();
-        const html = data.reply.map(item => `<div><strong>${formatDate(item.date)}</strong>: ${item.event}</div>`).join("<hr>");
-        showModal("Upcoming Events", html);
-        showUsage("events", "viewed");
+        document.getElementById('eventsContent').innerHTML = data.reply || 'No events found';
+        document.getElementById('eventsModal').style.display = 'flex';
       } catch {
-        showModal("Events", "<div class='error'>No event data found.</div>");
+        document.getElementById('eventsContent').innerHTML = 'Error loading events';
       }
     }
 
-    async function fetchPanchang() {
+    async function showPanchang() {
       try {
         const res = await fetch(panchangUrl);
         const data = await res.json();
-        const html = data.reply.map(item => `<div><strong>${formatDate(item.date)}</strong>: ${item.details}</div>`).join("<hr>");
-        showModal("3-Day Panchang", html);
-        showUsage("panchang", "viewed");
+        document.getElementById('panchangContent').innerHTML = data.reply || 'No data found';
+        document.getElementById('panchangModal').style.display = 'flex';
       } catch {
-        showModal("Panchang", "<div class='error'>No panchang data found.</div>");
+        document.getElementById('panchangContent').innerHTML = 'Error loading panchang';
       }
     }
 
-    function showModal(title, body) {
-      document.getElementById("modalTitle").innerText = title;
-      document.getElementById("modalBody").innerHTML = body;
-      document.getElementById("modalOverlay").style.display = "flex";
+    function hideModal(id) {
+      document.getElementById(id).style.display = 'none';
     }
 
-    function formatDate(dateString) {
-      const d = new Date(dateString);
-      return d.toLocaleDateString("en-IN", { day: '2-digit', month: 'long', year: 'numeric' });
-    }
-
-    async function showUsage(type, detail) {
-      try {
-        await fetch(usageUrl, {
-          method: "POST",
-          body: JSON.stringify({ type, detail, time: new Date().toISOString() }),
-          headers: { "Content-Type": "application/json" }
-        });
-      } catch (e) {
-        console.log("Usage log failed");
-      }
+    function closeModal(event, id) {
+      if (event.target.className === 'modal') hideModal(id);
     }
   </script>
 </body>
