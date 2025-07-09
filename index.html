@@ -169,131 +169,152 @@
   </div>
 
   <script>
-    const placeSelect = document.getElementById('placeSelect');
-    const categorySelect = document.getElementById('categorySelect');
-    const faqSelect = document.getElementById('faqSelect');
-    const chatbox = document.getElementById('chatbox');
-                                                            
-    const contactsUrl = 'https://script.google.com/macros/s/AKfycbw9WyNonGzDrM40FW2VfNp29J0wgqnFpF8BE0ya531PkGuVSDf1rj71BFKl-4rA_W-SpA/exec';
-    const faqUrl = 'https://script.google.com/macros/s/AKfycbxqvwmPTZT7RBm3PwxhuAYUYgu-7RnGhmWO7zrO3qUVXYg1nXl3Wewv9HE3n8fHQKxU/exec';
-    const eventsUrl = 'https://script.google.com/macros/s/AKfycbxj4K8l6ARSM6MMq0bjbODLgSbrYxg1VwWdt4bd4SSegEYdzG47h3jcG8mA2xkX3nSf8w/exec';
-    const panchangUrl = 'https://script.google.com/macros/s/AKfycbxT9Op5y5Y-3LnkPwLR-allMzRDIbckWdR-v2GjiIdDLuILTMkVxskzBY6jQCSxWHzz/exec';
-    const usageLogUrl = 'https://script.google.com/macros/s/AKfycbwBJI8rqGMfLHXQMwwIF8BcKvR-uH9FHdcnTO5fN6TlCxIMQY7gR_R_iF-l8tLdLwc-jg/exec';
-                         
-    function clearChat() {
-      chatbox.innerHTML = '';
-    }
+  const placeSelect = document.getElementById('placeSelect');
+  const categorySelect = document.getElementById('categorySelect');
+  const faqSelect = document.getElementById('faqSelect');
+  const chatbox = document.getElementById('chatbox');
 
-    function showTyping() {
+  const contactsUrl = 'https://script.google.com/macros/s/AKfycbw9WyNonGzDrM40FW2VfNp29J0wgqnFpF8BE0ya531PkGuVSDf1rj71BFKl-4rA_W-SpA/exec';
+  const faqUrl = 'https://script.google.com/macros/s/AKfycbxqvwmPTZT7RBm3PwxhuAYUYgu-7RnGhmWO7zrO3qUVXYg1nXl3Wewv9HE3n8fHQKxU/exec';
+  const eventsUrl = 'https://script.google.com/macros/s/AKfycbxj4K8l6ARSM6MMq0bjbODLgSbrYxg1VwWdt4bd4SSegEYdzG47h3jcG8mA2xkX3nSf8w/exec';
+  const panchangUrl = 'https://script.google.com/macros/s/AKfycbxT9Op5y5Y-3LnkPwLR-allMzRDIbckWdR-v2GjiIdDLuILTMkVxskzBY6jQCSxWHzz/exec';
+  const usageLogUrl = 'https://script.google.com/macros/s/AKfycbwBJI8rqGMfLHXQMwwIF8BcKvR-uH9FHdcnTO5fN6TlCxIMQY7gR_R_iF-l8tLdLwc-jg/exec';
+
+  let currentFetch = null;
+
+  function clearChat() {
+    chatbox.innerHTML = '';
+  }
+
+  function showTyping() {
+    if (!document.getElementById('typingIndicator')) {
       const typing = document.createElement('div');
       typing.className = 'typing';
       typing.id = 'typingIndicator';
       typing.textContent = 'Mithra is typing...';
       chatbox.appendChild(typing);
     }
+  }
 
-    function removeTyping() {
-      const typing = document.getElementById('typingIndicator');
-      if (typing) typing.remove();
+  function removeTyping() {
+    const typing = document.getElementById('typingIndicator');
+    if (typing) typing.remove();
+  }
+
+  function appendMessage(text, type = 'bot') {
+    const div = document.createElement('div');
+    div.className = 'message ' + type;
+    div.textContent = text;
+    chatbox.appendChild(div);
+  }
+
+  function appendContactCard(contact) {
+    const div = document.createElement('div');
+    div.className = 'contact-card';
+    div.innerHTML = `
+      ${contact.title}<br>
+      ${contact.name}<br>
+      ${contact.phone1}<br>
+      ${contact.phone2}
+    `;
+    chatbox.appendChild(div);
+  }
+
+  async function fetchContacts() {
+    const place = placeSelect.value;
+    const category = categorySelect.value;
+    if (!place || !category) return;
+
+    clearChat();
+    showTyping();
+
+    // Cancel any previous request
+    if (currentFetch) {
+      currentFetch.abort();
     }
 
-    function appendMessage(text, type = 'bot') {
-      const div = document.createElement('div');
-      div.className = 'message ' + type;
-      div.textContent = text;
-      chatbox.appendChild(div);
-    }
+    const controller = new AbortController();
+    currentFetch = controller;
 
-    function appendContactCard(contact) {
-      const div = document.createElement('div');
-      div.className = 'contact-card';
-      div.innerHTML = `
-        ${contact.title}<br>
-        ${contact.name}<br>
-        ${contact.phone1}<br>
-        ${contact.phone2}
-      `;
-      chatbox.appendChild(div);
-    }
+    try {
+      const response = await fetch(`${contactsUrl}?place=${encodeURIComponent(place)}&category=${encodeURIComponent(category)}`, {
+        signal: controller.signal,
+      });
 
-    async function fetchContacts() {
-      const place = placeSelect.value;
-      const category = categorySelect.value;
-      if (!place || !category) return;
-      clearChat(); showTyping();
+      const data = await response.json();
+      removeTyping();
+      currentFetch = null;
 
-      try {
-        const response = await fetch(`${contactsUrl}?place=${encodeURIComponent(place)}&category=${encodeURIComponent(category)}`);
-        const data = await response.json();
-        removeTyping();
-
-        if (data.contacts && data.contacts.length) {
-          data.contacts.forEach(c => appendContactCard(c));
-        } else {
-          appendMessage('No contacts found.', 'error');
-        }
-      } catch {
-        removeTyping();
+      if (data.contacts && data.contacts.length) {
+        data.contacts.forEach(c => appendContactCard(c));
+      } else {
+        appendMessage('No contacts found.', 'error');
+      }
+    } catch (err) {
+      removeTyping();
+      if (err.name !== 'AbortError') {
         appendMessage('Server error. Please try again.', 'error');
       }
     }
+  }
 
-    async function fetchFaq() {
-      const faq = faqSelect.value;
-      if (!faq) return;
-      clearChat(); showTyping();
-      try {
-        const response = await fetch(`${faqUrl}?faq=${encodeURIComponent(faq)}`);
-        const data = await response.json();
-        removeTyping();
-        appendMessage(data.reply);
-      } catch {
-        removeTyping();
-        appendMessage("Sorry, couldn't reach FAQ server.", 'error');
-      }
+  async function fetchFaq() {
+    const faq = faqSelect.value;
+    if (!faq) return;
+
+    clearChat();
+    showTyping();
+    try {
+      const response = await fetch(`${faqUrl}?faq=${encodeURIComponent(faq)}`);
+      const data = await response.json();
+      removeTyping();
+      appendMessage(data.reply);
+    } catch {
+      removeTyping();
+      appendMessage("Sorry, couldn't reach FAQ server.", 'error');
     }
+  }
 
-    async function openModal(type) {
-      const modal = document.getElementById('modal');
-      const modalData = document.getElementById('modalData');
-      modal.style.display = 'block';
-      modalData.innerHTML = 'Loading...';
-      const url = type === 'events' ? eventsUrl : panchangUrl;
+  async function openModal(type) {
+    const modal = document.getElementById('modal');
+    const modalData = document.getElementById('modalData');
+    modal.style.display = 'block';
+    modalData.innerHTML = 'Loading...';
+    const url = type === 'events' ? eventsUrl : panchangUrl;
 
-      try {
-        const response = await fetch(url);
-        const data = await response.json();
-        modalData.innerHTML = (data.reply || 'No data found').replace(/\n/g, '<br>');
-      } catch {
-        modalData.innerHTML = 'Could not fetch data.';
-      }
+    try {
+      const response = await fetch(url);
+      const data = await response.json();
+      modalData.innerHTML = (data.reply || 'No data found').replace(/\n/g, '<br>');
+    } catch {
+      modalData.innerHTML = 'Could not fetch data.';
     }
+  }
 
-    function closeModal(event) {
-      if (event.target.classList.contains('modal') || event.target.classList.contains('close')) {
-        document.getElementById('modal').style.display = 'none';
-      }
+  function closeModal(event) {
+    if (event.target.classList.contains('modal') || event.target.classList.contains('close')) {
+      document.getElementById('modal').style.display = 'none';
     }
+  }
 
-    placeSelect.addEventListener('change', () => {
-      faqSelect.value = "";
-      fetchContacts();
-    });
-    categorySelect.addEventListener('change', () => {
-      faqSelect.value = "";
-      fetchContacts();
-    });
-    faqSelect.addEventListener('change', () => {
-      placeSelect.value = "";
-      categorySelect.value = "";
-      fetchFaq();
-    });
+  placeSelect.addEventListener('change', () => {
+    faqSelect.value = "";
+    fetchContacts();
+  });
+  categorySelect.addEventListener('change', () => {
+    faqSelect.value = "";
+    fetchContacts();
+  });
+  faqSelect.addEventListener('change', () => {
+    placeSelect.value = "";
+    categorySelect.value = "";
+    fetchFaq();
+  });
 
-    window.onload = () => {
-  appendMessage('Hi, I am Mithra! Please select a Place and Category to get contacts or select a FAQ question.');
-};
+  window.onload = () => {
+    appendMessage('Hi, I am Mithra! Please select a Place and Category to get contacts or select a FAQ question.');
+  };
+</script>
 
-
-  </script>
 </body>
 </html>
