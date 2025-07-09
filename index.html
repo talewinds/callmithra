@@ -2,100 +2,75 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Call Mithra</title>
   <style>
     body {
-      font-family: 'Segoe UI', sans-serif;
-      background: #f9f9f9;
-      margin: 0; padding: 20px;
-      display: flex; justify-content: center;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f5f5f5;
+      margin: 0;
+      padding: 0;
     }
     .chat-container {
-      background: white;
-      width: 100%;
-      max-width: 480px;
-      border-radius: 12px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-      display: flex;
-      flex-direction: column;
+      max-width: 500px;
+      margin: 0 auto;
       padding: 20px;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      margin-top: 20px;
     }
     .header {
-      font-size: 24px;
-      font-weight: bold;
-      color: maroon;
       text-align: center;
+      color: maroon;
+      font-size: 1.8em;
+      font-weight: bold;
     }
     .slogan {
       text-align: center;
-      color: black;
-      font-size: 14px;
-      margin-bottom: 15px;
+      color: #000;
+      font-size: 1rem;
+      margin-bottom: 20px;
     }
-    label {
-      margin-top: 10px;
-      font-weight: 600;
-      color: #333;
+    label, select {
+      display: block;
+      width: 100%;
+      margin: 10px 0 5px;
     }
     select {
-      width: 100%;
       padding: 8px;
       border-radius: 6px;
-      margin-top: 5px;
-      font-size: 16px;
+      font-size: 1rem;
     }
     #chatbox {
-      margin-top: 20px;
-    }
-    .response-box {
-      background: #fff0f5;
+      background: #f9f9f9;
       border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 10px;
+      margin-top: 20px;
+      min-height: 200px;
+      white-space: pre-wrap;
+    }
+    .message {
+      margin-bottom: 10px;
+    }
+    .contact-card {
+      background: #fff0f0;
       border-radius: 10px;
       padding: 12px;
-      margin-bottom: 10px;
+      margin-bottom: 15px;
+      border: 1px solid maroon;
+      font-size: 1.05rem;
       color: maroon;
-      font-size: 16px;
-      white-space: pre-wrap;
+      line-height: 1.6;
     }
     .error {
       color: red;
-      margin-top: 10px;
     }
-    button {
-      margin-top: 10px;
-      padding: 10px;
-      border: none;
-      background: maroon;
-      color: white;
-      border-radius: 6px;
-      font-size: 14px;
-      cursor: pointer;
-    }
-    .modal {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0,0,0,0.4);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 99;
-    }
-    .modal-content {
-      background: #fff;
-      padding: 20px;
-      border-radius: 10px;
-      width: 90%;
-      max-width: 400px;
-      position: relative;
-    }
-    .close-btn {
-      position: absolute;
-      top: 10px; right: 15px;
-      font-size: 18px;
-      cursor: pointer;
-      color: maroon;
+    .typing {
+      font-style: italic;
+      color: gray;
+      margin: 10px 0;
     }
   </style>
 </head>
@@ -133,105 +108,114 @@
     </select>
 
     <div id="chatbox"></div>
-
-    <button onclick="showModal('events')">Events</button>
-    <button onclick="showModal('panchang')">Panchang</button>
   </div>
 
-  <div id="modal" class="modal" style="display:none;" onclick="hideModal()">
-    <div class="modal-content" onclick="event.stopPropagation()">
-      <span class="close-btn" onclick="hideModal()">×</span>
-      <div id="modalContent"></div>
-    </div>
-  </div>
+  <script>
+    const placeSelect = document.getElementById('placeSelect');
+    const categorySelect = document.getElementById('categorySelect');
+    const faqSelect = document.getElementById('faqSelect');
+    const chatbox = document.getElementById('chatbox');
 
-<script>
-  const placeSelect = document.getElementById("placeSelect");
-  const categorySelect = document.getElementById("categorySelect");
-  const faqSelect = document.getElementById("faqSelect");
-  const chatbox = document.getElementById("chatbox");
-                       
-  const contactsUrl = "https://script.google.com/macros/s/AKfycbzljP53EAr9tD7we62zp8qjigDcCFSb15YN9iTIYRqtTZTPYueDMGicPAf6uJJTPdAr5Q/exec";
-  const faqUrl = "https://script.google.com/macros/s/AKfycbxqvwmPTZT7RBm3PwxhuAYUYgu-7RnGhmWO7zrO3qUVXYg1nXl3Wewv9HE3n8fHQKxU/exec";
-  const eventsUrl = "https://script.google.com/macros/s/AKfycbxj4K8l6ARSM6MMq0bjbODLgSbrYxg1VwWdt4bd4SSegEYdzG47h3jcG8mA2xkX3nSf8w/exec";
-  const panchangUrl = "https://script.google.com/macros/s/AKfycbxT9Op5y5Y-3LnkPwLR-allMzRDIbckWdR-v2GjiIdDLuILTMkVxskzBY6jQCSxWHzz/exec";
-  const logUrl = "https://script.google.com/macros/s/AKfycbwBJI8rqGMfLHXQMwwIF8BcKvR-uH9FHdcnTO5fN6TlCxIMQY7gR_R_iF-l8tLdLwc-jg/exec";
+    const contactsUrl = 'https://script.google.com/macros/s/AKfycbw9WyNonGzDrM40FW2VfNp29J0wgqnFpF8BE0ya531PkGuVSDf1rj71BFKl-4rA_W-SpA/exec';
+    const faqUrl = 'https://script.google.com/macros/s/AKfycbxqvwmPTZT7RBm3PwxhuAYUYgu-7RnGhmWO7zrO3qUVXYg1nXl3Wewv9HE3n8fHQKxU/exec';
+    const eventsUrl = 'https://script.google.com/macros/s/AKfycbxj4K8l6ARSM6MMq0bjbODLgSbrYxg1VwWdt4bd4SSegEYdzG47h3jcG8mA2xkX3nSf8w/exec';
+    const panchangUrl = 'https://script.google.com/macros/s/AKfycbxT9Op5y5Y-3LnkPwLR-allMzRDIbckWdR-v2GjiIdDLuILTMkVxskzBY6jQCSxWHzz/exec';
+    const usageLogUrl = 'https://script.google.com/macros/s/AKfycbwBJI8rqGMfLHXQMwwIF8BcKvR-uH9FHdcnTO5fN6TlCxIMQY7gR_R_iF-l8tLdLwc-jg/exec';
 
-  placeSelect.addEventListener("change", fetchContacts);
-  categorySelect.addEventListener("change", fetchContacts);
-  faqSelect.addEventListener("change", fetchFaq);
+    function clearChat() {
+      chatbox.innerHTML = '';
+    }
 
-  async function fetchContacts() {
-    const place = placeSelect.value;
-    const category = categorySelect.value;
-    faqSelect.value = "";
+    function showTyping() {
+      const typing = document.createElement('div');
+      typing.className = 'typing';
+      typing.id = 'typingIndicator';
+      typing.textContent = 'Mithra is typing...';
+      chatbox.appendChild(typing);
+    }
 
-    if (!place || !category) return;
+    function removeTyping() {
+      const typing = document.getElementById('typingIndicator');
+      if (typing) typing.remove();
+    }
 
-    chatbox.innerHTML = "";
-    try {
-      const res = await fetch(`${contactsUrl}?place=${place}&category=${category}`);
-      const data = await res.json();
+    function appendMessage(text, type = 'bot') {
+      const div = document.createElement('div');
+      div.className = 'message ' + type;
+      div.textContent = text;
+      chatbox.appendChild(div);
+    }
 
-      if (!data.reply || data.reply.length === 0) {
-        chatbox.innerHTML = `<div class="error">No contacts found.</div>`;
-      } else {
-        data.reply.forEach(c => {
-          const box = document.createElement("div");
-          box.className = "response-box";
-          box.innerHTML = `${place} ${category}<br>${c.name}<br>${c.phone1}<br>${c.phone2}`;
-          chatbox.appendChild(box);
-        });
+    function appendContactCard(contact) {
+      const div = document.createElement('div');
+      div.className = 'contact-card';
+      div.innerHTML = `
+        ${contact.title}<br>
+        ${contact.name}<br>
+        ${contact.phone1}<br>
+        ${contact.phone2}
+      `;
+      chatbox.appendChild(div);
+    }
+
+    async function fetchContacts() {
+      const place = placeSelect.value;
+      const category = categorySelect.value;
+      if (!place || !category) return;
+
+      clearChat();
+      showTyping();
+
+      try {
+        const response = await fetch(`${contactsUrl}?place=${encodeURIComponent(place)}&category=${encodeURIComponent(category)}`);
+        const data = await response.json();
+        removeTyping();
+
+        if (data.contacts && data.contacts.length) {
+          data.contacts.forEach(c => appendContactCard(c));
+        } else {
+          appendMessage('No contacts found.', 'error');
+        }
+      } catch (err) {
+        removeTyping();
+        appendMessage('Server error. Please try again.', 'error');
       }
-    } catch {
-      chatbox.innerHTML = `<div class="error">Server error. Please try again.</div>`;
     }
-  }
 
-  async function fetchFaq() {
-    const faq = faqSelect.value;
-    placeSelect.value = "";
-    categorySelect.value = "";
-    chatbox.innerHTML = "";
+    async function fetchFaq() {
+      const faq = faqSelect.value;
+      if (!faq) return;
 
-    if (!faq) return;
-
-    try {
-      const res = await fetch(`${faqUrl}?faq=${encodeURIComponent(faq)}`);
-      const data = await res.json();
-      chatbox.innerHTML = `<div class="response-box">${data.reply}</div>`;
-    } catch {
-      chatbox.innerHTML = `<div class="error">Server error. Please try again.</div>`;
+      clearChat();
+      showTyping();
+      try {
+        const response = await fetch(`${faqUrl}?faq=${encodeURIComponent(faq)}`);
+        const data = await response.json();
+        removeTyping();
+        appendMessage(data.reply);
+      } catch {
+        removeTyping();
+        appendMessage("Sorry, couldn't reach FAQ server.", 'error');
+      }
     }
-  }
 
-  async function showModal(type) {
-    const modal = document.getElementById("modal");
-    const modalContent = document.getElementById("modalContent");
+    placeSelect.addEventListener('change', () => {
+      faqSelect.value = "";
+      fetchContacts();
+    });
+    categorySelect.addEventListener('change', () => {
+      faqSelect.value = "";
+      fetchContacts();
+    });
+    faqSelect.addEventListener('change', () => {
+      placeSelect.value = "";
+      categorySelect.value = "";
+      fetchFaq();
+    });
 
-    let url = type === "events" ? eventsUrl : panchangUrl;
-
-    try {
-      const res = await fetch(url);
-      const data = await res.json();
-
-      modalContent.innerHTML = Array.isArray(data.reply)
-        ? data.reply.map(item => `<div>${item}</div>`).join("<hr>")
-        : data.reply;
-
-      modal.style.display = "flex";
-    } catch {
-      modalContent.innerHTML = `<span class="error">Unable to load data</span>`;
-      modal.style.display = "flex";
-    }
-  }
-
-  function hideModal() {
-    document.getElementById("modal").style.display = "none";
-  }
-
-  // Log usage
-  fetch(logUrl).catch(() => {});
-</script>
+    window.onload = () => {
+      appendMessage('Hi, I am Mithra! Please select a Place and Category to get contacts or select a FAQ question.');
+    };
+  </script>
 </body>
 </html>
