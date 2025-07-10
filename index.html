@@ -148,23 +148,13 @@
       <option>Advocates</option>
       <option>Other Services</option>
     </select>
-
-    
-    
-    <div class="button-row">
+  
+        <div class="button-row">
       <button onclick="openModal('events')">Events</button>
       <button onclick="openModal('panchang')">Panchang</button>
     </div>
 
     <div id="chatbox"></div>
-  </div>
-
-  <!-- Modal -->
-  <div id="modal" class="modal" onclick="closeModal(event)">
-    <div class="modal-content">
-      <span class="close" onclick="closeModal(event)">&times;</span>
-      <div id="modalData">Loading...</div>
-    </div>
     <label for="faqSelect">Select FAQ:</label>
     <select id="faqSelect">
       <option value="">-- Select FAQ --</option>
@@ -174,6 +164,15 @@
       <option>Contact Mithra</option>
       <option>Does Call Mithra provide any other services?</option>
     </select>
+  </div>
+
+  <!-- Modal -->
+  <div id="modal" class="modal" onclick="closeModal(event)">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal(event)">&times;</span>
+      <div id="modalData">Loading...</div>
+    </div>
+    
   </div>
 
   <script>
