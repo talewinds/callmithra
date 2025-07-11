@@ -20,18 +20,7 @@
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
       margin-top: 20px;
     }
-    .header {
-      text-align: center;
-      color: maroon;
-      font-size: 1.8em;
-      font-weight: bold;
-    }
-    .slogan {
-      text-align: center;
-      color: #000;
-      font-size: 1rem;
-      margin-bottom: 20px;
-    }
+    
     label, select {
       display: block;
       width: 100%;
@@ -117,12 +106,43 @@
       color: red;
       cursor: pointer;
     }
+    .header-with-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.logo-img {
+  width: 48px;
+  height: 48px;
+  border-radius: 6px;
+}
+
+.header-title {
+  font-size: 1.8em;
+  font-weight: bold;
+  color: maroon;
+  margin-bottom: 4px;
+}
+
+.slogan {
+  font-size: 1rem;
+  color: #000;
+  margin: 0;
+}
   </style>
 </head>
 <body>
   <div class="chat-container">
-    <div class="header">Call Mithra</div>
+    <div class="header-with-logo">
+  <img src="ChatGPT Image Jul 10, 2025, 09_45_42 PM.png" alt="Mithra Logo" class="logo-img" />
+  <div>
+    <div class="header-title">Call Mithra</div>
     <div class="slogan">Together For A Better Tomorrow</div>
+  </div>
+</div>
+
 
     <label for="placeSelect">Select Place:</label>
     <select id="placeSelect">
