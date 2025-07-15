@@ -5,39 +5,75 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Mithra</title>
   <style>
-    :root {
-      --bg-color: #f5f5f5;
-      --text-color: #000;
-      --card-bg: #FFFDD0;
-      --button-bg: maroon;
-      --button-text: white;
-    }
-    [data-theme="dark"] {
-      --bg-color: #121212;
-      --text-color: #f0f0f0;
-      --card-bg: #1e1e1e;
-      --button-bg: #bb86fc;
-      --button-text: #000;
-    }
-
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: var(--bg-color);
-      color: var(--text-color);
+      background: #f5f5f5;
       margin: 0;
       padding: 0 0 60px 0;
       transition: background 0.3s, color 0.3s;
+    }
+
+    body.dark-mode {
+      background: #121212;
+      color: white;
     }
 
     .chat-container {
       max-width: 500px;
       margin: 0 auto;
       padding: 20px;
-      background: var(--card-bg);
+      background: #FFFDD0;
       border-radius: 12px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
       margin-top: 1px;
       border-bottom: 3px solid skyblue;
+    }
+
+    body.dark-mode .chat-container {
+      background: #1e1e1e;
+      border-color: #333;
+    }
+
+    .header-with-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    .logo-img {
+      width: 58px;
+      height: 58px;
+      border-radius: 6px;
+    }
+
+    .header-title {
+      font-size: 1.8em;
+      font-weight: bold;
+      color: maroon;
+      margin-bottom: 4px;
+    }
+
+    .slogan {
+      font-size: 1rem;
+      color: #000;
+      margin: 0;
+      font-weight: bold;
+    }
+
+    body.dark-mode .header-title,
+    body.dark-mode .slogan {
+      color: #fffacd;
+    }
+
+    #toggle-mode {
+      position: absolute;
+      right: 20px;
+      top: 20px;
+      background: none;
+      border: none;
+      font-size: 22px;
+      cursor: pointer;
     }
 
     #ad-banner {
@@ -54,20 +90,12 @@
       z-index: 9999;
     }
 
-    .theme-toggle {
-      position: fixed;
-      top: 10px;
-      right: 10px;
-      font-size: 22px;
-      cursor: pointer;
-      z-index: 10000;
-    }
-
     label, select {
       display: block;
       width: 100%;
       margin: 10px 0 5px;
     }
+
     select {
       padding: 8px;
       border-radius: 6px;
@@ -82,20 +110,16 @@
       text-align: center;
       margin: 10px 0;
     }
+
     button {
       margin: 4px;
       padding: 6px 10px;
       border: none;
       border-radius: 6px;
-      background-color: var(--button-bg);
-      color: var(--button-text);
+      background-color: maroon;
+      color: white;
       font-weight: bold;
       cursor: pointer;
-      transition: transform 0.2s ease, background-color 0.2s;
-    }
-    button:hover {
-      background-color: #a00000;
-      transform: scale(1.05);
     }
 
     #chatbox {
@@ -106,6 +130,11 @@
       margin-top: 20px;
       min-height: 200px;
       white-space: pre-wrap;
+    }
+
+    body.dark-mode #chatbox {
+      background: #2e2e2e;
+      border-color: #555;
     }
 
     .message {
@@ -123,13 +152,23 @@
       line-height: 0.8;
     }
 
+    body.dark-mode .contact-card {
+      background: #3b3b3b;
+      color: white;
+    }
+
     .error {
       color: red;
     }
+
     .typing {
       font-style: italic;
       color: black;
       margin: 10px 0;
+    }
+
+    body.dark-mode .typing {
+      color: #ccc;
     }
 
     .modal {
@@ -163,43 +202,10 @@
       color: red;
       cursor: pointer;
     }
-
-    .header-with-logo {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 10px;
-    }
-
-    .logo-img {
-      width: 58px;
-      height: 58px;
-      border-radius: 6px;
-      animation: glow 2s ease-in-out forwards;
-    }
-
-    @keyframes glow {
-      0% { box-shadow: 0 0 0px maroon; }
-      100% { box-shadow: 0 0 10px maroon; }
-    }
-
-    .header-title {
-      font-size: 1.8em;
-      font-weight: bold;
-      color: maroon;
-      margin-bottom: 4px;
-    }
-
-    .slogan {
-      font-size: 1rem;
-      color: #000;
-      margin: 0;
-      font-weight: bold;
-    }
   </style>
 </head>
 <body>
-  <div class="theme-toggle" onclick="toggleTheme()">🌙</div>
+  <button id="toggle-mode" title="Toggle light/dark mode">🌓</button>
 
   <div class="chat-container">
     <div class="header-with-logo">
@@ -213,27 +219,26 @@
     <label for="placeSelect">Select Place:</label>
     <select id="placeSelect">
       <option value="">-- Select Place --</option>
-      <option>Alampallam</option>
-      <option>Ayalur</option>
-      <option>Kollengode</option>
-      <option>Mathur</option>
-      <option>Nemmara</option>
-      <option>Pallassena</option>
-      <option>Paylur</option>
-      <option>Thathamangalam</option>
+      <option value="Alampallam">Alampallam</option>
+      <option value="Ayalur">Ayalur</option>
+      <option value="Kollengode">Kollengode</option>
+      <option value="Mathur">Mathur</option>
+      <option value="Nemmara">Nemmara</option>
+      <option value="Pallassena">Pallassena</option>
+      <option value="Paylur">Paylur</option>
+      <option value="Thathamangalam">Thathamangalam</option>
     </select>
 
     <label for="categorySelect">Select Category:</label>
     <select id="categorySelect">
-  <option value="">-- Select Category --</option>
-  <option value="Caterers">🍛 Caterers</option>
-  <option value="Vaideekhal">🧘‍♂️ Vaideekhal</option>
-  <option value="Temple Priests">🛕 Temple Priests</option>
-  <option value="Business">💼 Business</option>
-  <option value="Advocates">⚖️ Advocates</option>
-  <option value="Other Services">🤝 Other Services</option>
-</select>
-
+      <option value="">-- Select Category --</option>
+      <option value="Caterers">🍛 Caterers</option>
+      <option value="Vaideekhal">🕉️ Vaideekhal</option>
+      <option value="Temple Priests">🛕 Temple Priests</option>
+      <option value="Business">🏬 Business</option>
+      <option value="Advocates">⚖️ Advocates</option>
+      <option value="Other Services">🤝 Other Services</option>
+    </select>
 
     <div class="button-row">
       <button onclick="openModal('events')">Events</button>
@@ -328,19 +333,16 @@
       const controller = new AbortController();
       currentFetch = controller;
 
-      const nocache = Date.now();
-      const url = `${contactsUrl}?place=${encodeURIComponent(place)}&category=${encodeURIComponent(category)}&nocache=${nocache}`;
+      const url = `${contactsUrl}?place=${encodeURIComponent(place)}&category=${encodeURIComponent(category)}&nocache=${Date.now()}`;
 
       try {
         const response = await fetch(url, {
           signal: controller.signal,
           cache: 'no-store',
         });
-
         const data = await response.json();
         removeTyping();
         currentFetch = null;
-
         if (data.contacts && data.contacts.length) {
           data.contacts.forEach(c => appendContactCard(c));
         } else {
@@ -377,7 +379,6 @@
       modal.style.display = 'block';
       modalData.innerHTML = 'Loading...';
       const url = type === 'events' ? eventsUrl : panchangUrl;
-
       try {
         const response = await fetch(url);
         const data = await response.json();
@@ -397,12 +398,10 @@
       faqSelect.value = "";
       fetchContacts();
     });
-
     categorySelect.addEventListener('change', () => {
       faqSelect.value = "";
       fetchContacts();
     });
-
     faqSelect.addEventListener('change', () => {
       placeSelect.value = "";
       categorySelect.value = "";
@@ -410,10 +409,10 @@
     });
 
     window.onload = () => {
-      appendMessage('Hi, I am Mithra... Please select a Place (alphabetical order ) and Category to get contacts or select a FAQ question.');
+      appendMessage('Hi, I am Mithra... Please select a Place and Category to get contacts or select a FAQ question.');
     };
 
-    // Rotate ads
+    // Rotating Ad Banner
     const ads = [
       "🌸 Sri Raghavendra Stores – Pooja Items & Flowers – Call 9876543210",
       "🍛 Lakshmi Sweets, Alampallam – Fresh Specials – Ph: 9123456789",
@@ -430,14 +429,10 @@
     rotateAds();
     setInterval(rotateAds, 4000);
 
-    // Toggle theme
-    function toggleTheme() {
-      const html = document.documentElement;
-      const current = html.getAttribute("data-theme");
-      const next = current === "dark" ? "light" : "dark";
-      html.setAttribute("data-theme", next);
-      document.querySelector(".theme-toggle").textContent = next === "dark" ? "☀️" : "🌙";
-    }
+    // Dark/light mode toggle
+    document.getElementById("toggle-mode").addEventListener("click", () => {
+      document.body.classList.toggle("dark-mode");
+    });
   </script>
 </body>
 </html>
