@@ -5,17 +5,36 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Mithra</title>
   <style>
+    :root {
+      --bg-color: #f5f5f5;
+      --text-color: #000;
+      --card-bg: #FFFDD0;
+      --button-bg: maroon;
+      --button-text: white;
+    }
+
+    [data-theme="dark"] {
+      --bg-color: #121212;
+      --text-color: #f0f0f0;
+      --card-bg: #1e1e1e;
+      --button-bg: #bb86fc;
+      --button-text: #000;
+    }
+
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: #f5f5f5;
+      background: var(--bg-color);
+      color: var(--text-color);
       margin: 0;
-      padding: 0 0 60px 0; /* space for ad banner at bottom */
+      padding: 0 0 60px 0;
+      transition: background 0.3s, color 0.3s;
     }
+
     .chat-container {
       max-width: 500px;
       margin: 0 auto;
       padding: 20px;
-      background: #FFFDD0;
+      background: var(--card-bg);
       border-radius: 12px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
       margin-top: 1px;
@@ -36,6 +55,15 @@
       z-index: 9999;
     }
 
+    .theme-toggle {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      font-size: 22px;
+      cursor: pointer;
+      z-index: 10000;
+    }
+
     label, select {
       display: block;
       width: 100%;
@@ -50,6 +78,7 @@
       color: maroon;
       font-weight: bold;
     }
+
     .button-row {
       text-align: center;
       margin: 10px 0;
@@ -59,10 +88,15 @@
       padding: 6px 10px;
       border: none;
       border-radius: 6px;
-      background-color: maroon;
-      color: white;
+      background-color: var(--button-bg);
+      color: var(--button-text);
       font-weight: bold;
       cursor: pointer;
+      transition: transform 0.2s ease, background-color 0.2s;
+    }
+    button:hover {
+      background-color: #a00000;
+      transform: scale(1.05);
     }
 
     #chatbox {
@@ -74,9 +108,11 @@
       min-height: 200px;
       white-space: pre-wrap;
     }
+
     .message {
       margin-bottom: 10px;
     }
+
     .contact-card {
       background: #fff0f0;
       border-radius: 8px;
@@ -87,6 +123,7 @@
       color: black;
       line-height: 0.8;
     }
+
     .error {
       color: red;
     }
@@ -95,6 +132,7 @@
       color: black;
       margin: 10px 0;
     }
+
     .modal {
       display: none;
       position: fixed;
@@ -105,6 +143,7 @@
       height: 100%;
       background-color: rgba(0,0,0,0.4);
     }
+
     .modal-content {
       background-color: white;
       margin: 15% auto;
@@ -115,6 +154,7 @@
       color: maroon;
       position: relative;
     }
+
     .close {
       position: absolute;
       top: 5px;
@@ -124,6 +164,7 @@
       color: red;
       cursor: pointer;
     }
+
     .header-with-logo {
       display: flex;
       align-items: center;
@@ -135,6 +176,12 @@
       width: 58px;
       height: 58px;
       border-radius: 6px;
+      animation: glow 2s ease-in-out forwards;
+    }
+
+    @keyframes glow {
+      0% { box-shadow: 0 0 0px maroon; }
+      100% { box-shadow: 0 0 10px maroon; }
     }
 
     .header-title {
@@ -143,13 +190,6 @@
       color: maroon;
       margin-bottom: 4px;
     }
-.header {
-  position: relative;
-  padding: 10px 20px;
-  background-color: #FFFDD0;
-  border-radius: 10px;
-  text-align: left;
-}
 
     .slogan {
       font-size: 1rem;
@@ -160,6 +200,8 @@
   </style>
 </head>
 <body>
+  <div class="theme-toggle" onclick="toggleTheme()">🌙</div>
+
   <div class="chat-container">
     <div class="header-with-logo">
       <img src="logo.png" class="logo-img" />
@@ -167,7 +209,6 @@
         <div class="header-title">Mithra</div>
         <div class="slogan">Together For A Better Tomorrow..</div>
       </div>
-     
     </div>
 
     <label for="placeSelect">Select Place:</label>
@@ -186,12 +227,12 @@
     <label for="categorySelect">Select Category:</label>
     <select id="categorySelect">
       <option value="">-- Select Category --</option>
-      <option>Caterers</option>
-      <option>Vaideekhal</option>
-      <option>Temple Priests</option>
-      <option>Business</option>
-      <option>Advocates</option>
-      <option>Other Services</option>
+      <option>🍛 Caterers</option>
+      <option>🧘‍♂️ Vaideekhal</option>
+      <option>🛕 Temple Priests</option>
+      <option>💼 Business</option>
+      <option>⚖️ Advocates</option>
+      <option>🔧 Other Services</option>
     </select>
 
     <div class="button-row">
@@ -213,7 +254,6 @@
     </select>
   </div>
 
-  <!-- Modal -->
   <div id="modal" class="modal" onclick="closeModal(event)">
     <div class="modal-content">
       <span class="close" onclick="closeModal(event)">&times;</span>
@@ -221,13 +261,11 @@
     </div>
   </div>
 
-  <!-- Ad banner fixed at bottom -->
   <div id="ad-banner">
     <span id="ad-text">Loading ads...</span>
   </div>
 
   <script>
-    // URLs for Google Sheets Web Apps
     const contactsUrl = 'https://script.google.com/macros/s/AKfycbwAmWhAciOjRL2DHgZTK3I--0NbdEnsLpF1vwcA1fSMRMJSkY7o_LiJAzVFCu5IMVggmg/exec';
     const faqUrl = 'https://script.google.com/macros/s/AKfycbxqvwmPTZT7RBm3PwxhuAYUYgu-7RnGhmWO7zrO3qUVXYg1nXl3Wewv9HE3n8fHQKxU/exec';
     const eventsUrl = 'https://script.google.com/macros/s/AKfycbxj4K8l6ARSM6MMq0bjbODLgSbrYxg1VwWdt4bd4SSegEYdzG47h3jcG8mA2xkX3nSf8w/exec';
@@ -286,10 +324,7 @@
       clearChat();
       showTyping();
 
-      if (currentFetch) {
-        currentFetch.abort();
-      }
-
+      if (currentFetch) currentFetch.abort();
       const controller = new AbortController();
       currentFetch = controller;
 
@@ -362,10 +397,12 @@
       faqSelect.value = "";
       fetchContacts();
     });
+
     categorySelect.addEventListener('change', () => {
       faqSelect.value = "";
       fetchContacts();
     });
+
     faqSelect.addEventListener('change', () => {
       placeSelect.value = "";
       categorySelect.value = "";
@@ -376,7 +413,7 @@
       appendMessage('Hi, I am Mithra... Please select a Place (alphabetical order ) and Category to get contacts or select a FAQ question.');
     };
 
-    // Rotating Ads script
+    // Rotate ads
     const ads = [
       "🌸 Sri Raghavendra Stores – Pooja Items & Flowers – Call 9876543210",
       "🍛 Lakshmi Sweets, Alampallam – Fresh Specials – Ph: 9123456789",
@@ -392,7 +429,15 @@
     }
     rotateAds();
     setInterval(rotateAds, 4000);
-  </script>
 
+    // Toggle theme
+    function toggleTheme() {
+      const html = document.documentElement;
+      const current = html.getAttribute("data-theme");
+      const next = current === "dark" ? "light" : "dark";
+      html.setAttribute("data-theme", next);
+      document.querySelector(".theme-toggle").textContent = next === "dark" ? "☀️" : "🌙";
+    }
+  </script>
 </body>
 </html>
