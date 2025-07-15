@@ -241,6 +241,7 @@
     </select>
 
     <div class="button-row">
+      <button onclick="openModal('news')">News</button>
       <button onclick="openModal('events')">Events</button>
       <button onclick="openModal('panchang')">Panchang</button>
     </div>
@@ -275,6 +276,7 @@
     const faqUrl = 'https://script.google.com/macros/s/AKfycbxqvwmPTZT7RBm3PwxhuAYUYgu-7RnGhmWO7zrO3qUVXYg1nXl3Wewv9HE3n8fHQKxU/exec';
     const eventsUrl = 'https://script.google.com/macros/s/AKfycbxj4K8l6ARSM6MMq0bjbODLgSbrYxg1VwWdt4bd4SSegEYdzG47h3jcG8mA2xkX3nSf8w/exec';
     const panchangUrl = 'https://script.google.com/macros/s/AKfycbxT9Op5y5Y-3LnkPwLR-allMzRDIbckWdR-v2GjiIdDLuILTMkVxskzBY6jQCSxWHzz/exec';
+    const newsUrl = 'https://script.google.com/macros/s/YOUR_NEWS_SCRIPT_URL/exec'; // 🔁 Replace this
 
     const placeSelect = document.getElementById('placeSelect');
     const categorySelect = document.getElementById('categorySelect');
@@ -378,7 +380,10 @@
       const modalData = document.getElementById('modalData');
       modal.style.display = 'block';
       modalData.innerHTML = 'Loading...';
-      const url = type === 'events' ? eventsUrl : panchangUrl;
+      let url = '';
+      if (type === 'events') url = eventsUrl;
+      else if (type === 'panchang') url = panchangUrl;
+      else if (type === 'news') url = newsUrl;
       try {
         const response = await fetch(url);
         const data = await response.json();
@@ -412,7 +417,6 @@
       appendMessage('Hi, I am Mithra... Please select a Place and Category to get contacts or select a FAQ question.');
     };
 
-    // Rotating Ad Banner
     const ads = [
       "🌸 Sri Raghavendra Stores – Pooja Items & Flowers – Call 9876543210",
       "🍛 Lakshmi Sweets, Alampallam – Fresh Specials – Ph: 9123456789",
@@ -429,7 +433,6 @@
     rotateAds();
     setInterval(rotateAds, 4000);
 
-    // Dark/light mode toggle
     document.getElementById("toggle-mode").addEventListener("click", () => {
       document.body.classList.toggle("dark-mode");
     });
